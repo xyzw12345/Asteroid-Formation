@@ -13,9 +13,6 @@ def compute_accelerations_cpu(particles: ParticleData, G: float = 1.0, epsilon: 
     """
     # Get indices of active particles
     active_indices = particles.active_indices
-    # print('\n\n')
-    # print(particles.position)
-    # print(particles.velocity)
 
     # Reset accelerations only for active particles
     particles.acceleration[active_indices] = 0.0
@@ -50,12 +47,9 @@ def compute_accelerations_cpu(particles: ParticleData, G: float = 1.0, epsilon: 
         # Note: diff[k] = pos[active_indices[k]] - pos[i]
         #       masses_j[k] = mass[active_indices[k]]
         accel_contrib = G * masses_j * diff * inv_dist_cubed_j # Shape (num_active, 3)
-        # print("accel_contrib:", accel_contrib)
 
         # Sum contributions from all other active particles (j != i)
         # We can achieve this by setting the contribution from i onto itself to zero
         accel_contrib[i_idx] = 0.0 # Zero out self-contribution explicitly
         particles.acceleration[i] = np.sum(accel_contrib, axis=0)
-    # print("acceleration:", particles.acceleration)
-    # x = input()
     
