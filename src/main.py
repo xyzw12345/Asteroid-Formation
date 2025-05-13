@@ -1,10 +1,3 @@
-import sys
-# Ensure the src directory is in the Python path
-# This is often needed when running scripts directly from within a sub-directory
-# Adjust path if your execution strategy differs (e.g., using package installation)
-import os
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
-
 from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
