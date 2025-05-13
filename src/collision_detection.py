@@ -1,4 +1,3 @@
-# (Potentially in a new file src/collision_detection.py)
 import numpy as np
 from .particle_data import ParticleData
 
@@ -19,8 +18,6 @@ def check_for_overlaps(particles: ParticleData, step_num: int):
 
     for i in range(len(active_idx)):
         for j in range(i + 1, len(active_idx)):
-            # pos_i = positions[i], pos_j = positions[j]
-            # r_i = radii[i], r_j = radii[j]
             diff = positions[i] - positions[j]
             dist_sq = np.sum(diff**2)
             sum_radii = radii[i] + radii[j]

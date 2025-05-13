@@ -18,9 +18,6 @@ def main():
 
     # 1. Generate Initial Conditions
     particles = generate_test_disk(n_asteroids=NUM_ASTEROIDS, max_particles=MAX_PARTICLES)
-    # particles = ParticleData(2)
-    # particles.add_particle([0, 0, 0], [0, 0, 0], 1, 1e-5)
-    # particles.add_particle([1e2, 0, 0], [0, 0, 0], 1, 1e-5)
 
     # 2. Create Simulation Instance
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
