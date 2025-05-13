@@ -2,7 +2,7 @@ import numpy as np
 
 class ParticleData:
     """
-    Manages particle data using Structure of Arrays (SoA) with NumPy.
+    Manages particle data using Structure of Arrays (SoA) with numpy.
     Handles a dynamic number of active particles up to a fixed capacity.
     """
     def __init__(self, capacity: int):

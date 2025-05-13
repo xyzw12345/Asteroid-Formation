@@ -82,7 +82,7 @@ class Simulation:
 
         self.time += self.current_dt_eff # Actual time advanced
         
-        colliding_pairs = check_for_overlaps(self.particles, self.time)
+        colliding_pairs = check_for_overlaps(self.particles)
         for i, j in colliding_pairs:
             self.particles.merge(i, j)
     

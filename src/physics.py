@@ -4,13 +4,14 @@ from .particle_data import ParticleData
 def compute_accelerations_cpu(particles: ParticleData, G: float = 1.0, epsilon: float = 0.0001):
     """
     Computes gravitational acceleration on all *active* particles using
-    direct N^2 summation on the CPU (partially vectorized with NumPy).
+    direct N^2 summation on the CPU (partially vectorized with numpy).
 
     Args:
         particles: ParticleData object containing particle states.
         G: Gravitational constant.
         epsilon: Softening length to avoid singularities.
     """
+    
     # Get indices of active particles
     active_indices = particles.active_indices
 
@@ -53,7 +54,7 @@ def compute_accelerations_cpu(particles: ParticleData, G: float = 1.0, epsilon: 
         accel_contrib[i_idx] = 0.0 # Zero out self-contribution explicitly
         particles.acceleration[i] = np.sum(accel_contrib, axis=0)
 
-def check_for_overlaps(particles: ParticleData, step_num: int):
+def check_for_overlaps(particles: ParticleData):
     """
     Basic O(N^2) overlap detection for reporting.
     Checks if distance between centers < sum of radii.
@@ -68,26 +69,22 @@ def check_for_overlaps(particles: ParticleData, step_num: int):
 
     collided_pairs = [] # List to store (original_id1, original_id2)
 
-    for i in range(len(active_idx)):
-        for j in range(i + 1, len(active_idx)):
-            diff = positions[i] - positions[j]
-            dist_sq = np.sum(diff**2)
-            sum_radii = radii[i] + radii[j]
+    diff = positions[np.newaxis, :, :] - positions[:, np.newaxis, :]
+    dist = np.linalg.norm(diff, axis=2)
+    np.fill_diagonal(dist, np.inf)
+    sum_of_radii = radii[np.newaxis, :] + radii[:, np.newaxis]  
 
-            if dist_sq < sum_radii**2:
-                # Overlap detected!
-                dist = np.sqrt(dist_sq)
-                print(f"Step {step_num}: OVERLAP! Particles {original_ids[i]} and {original_ids[j]} "
-                      f"dist: {dist:.3e}, sum_radii: {sum_radii:.3e}")
-                collided_pairs.append((original_ids[i], original_ids[j]))
+    row_index, column_index = np.where(dist < sum_of_radii)
+
+    for i in range(len(row_index)):
+        collided_pairs.append((original_ids[row_index[i]], original_ids[column_index[i]]))
+
     return collided_pairs
 
 def get_min_pairwise_dist(particles: ParticleData):
-    min_pairwise_dist = np.inf
     active_idx = particles.active_indices
     positions = particles.position[active_idx]
-    for i in range(len(active_idx)):
-        for j in range(i + 1, len(active_idx)):
-            diff = positions[i] - positions[j]
-            min_pairwise_dist = min(min_pairwise_dist, np.linalg.norm(diff))
-    return min_pairwise_dist
+    diff = positions[np.newaxis, :, :] - positions[:, np.newaxis, :]
+    dist = np.linalg.norm(diff, axis=2)
+    np.fill_diagonal(dist, np.inf)
+    return np.min(dist)
