@@ -1,10 +1,10 @@
 import numpy as np
 from .particle_data import ParticleData
 
-# Throughout this project, we use (1e12kg, km, s) for units of mass, distance, and time.
+# Throughout this project, we set G = SUN_MASS = AU = 1, which makes the unit of time to be [year / (2 * pi)]
 
-G = 6.6743e-8  # Gravitational constant
-SUN_MASS = 1.989e18 # Mass of the central star
+G = 1  # Gravitational constant
+SUN_MASS = 1 # Mass of the central star
 
 def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
     """
@@ -22,14 +22,14 @@ def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
     particles = ParticleData(capacity=max_particles)
 
     # Add the Sun (stationary at the center)
-    particles.add_particle(pos=[0, 0, 0], vel=[0, 0, 0], mass=SUN_MASS, radius=0.001) # Small radius for vis
+    particles.add_particle(pos=[0, 0, 0], vel=[0, 0, 0], mass=SUN_MASS, radius=1e-8) # Small radius for vis
 
     # Add asteroids
-    min_radius = 0.95 * 1.5e8 # Inner edge of the disk (AU)
-    max_radius = 1.05 * 1.5e8 # Outer edge of the disk (AU)
+    min_radius = 0.95 # Inner edge of the disk (AU)
+    max_radius = 1.05 # Outer edge of the disk (AU)
     asteroid_mass_min = 1e-12 * SUN_MASS # Very small mass relative to the sun
     asteroid_mass_max = 1e-9 * SUN_MASS
-    density = 5.51 # 1e12kg/km^3
+    density = 9.280e6 # taken to be the density of the earth
 
     for _ in range(n_asteroids):
         # Position

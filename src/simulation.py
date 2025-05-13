@@ -6,7 +6,7 @@ from .integrator import kick, drift
 from .visualization import plot_particles # Assuming basic plotter exists
 
 # Define constants here or import from a config file later
-G_CONST = 6.6743e-8
+G_CONST = 1
 EPSILON_SOFT = 1e-8 # Softening parameter
 
 class Simulation:
