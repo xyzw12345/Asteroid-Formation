@@ -1,6 +1,7 @@
 from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
+from cProfile import run
 
 def main():
     # --- Simulation Parameters ---
@@ -11,6 +12,7 @@ def main():
     MIN_MASS = 1e-6
     MAX_MASS = 3e-6
     PERTURBATION_SCALE = 0.3
+    ETA_VALUE = 0.3
     TIME_STEP = 0.001       # Simulation time step (e.g., in years/2pi if G=1, SunMass=1, Dist=AU)
     NUM_STEPS = 30000        # Period of simulation
     PLOT_INTERVAL = 400       # Period of Saving plot
@@ -29,10 +31,10 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL)
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE)
     # sim.run_interactive(dt_max_vis=TIME_STEP)
 
     print("--- Simulation Complete ---")
 
 if __name__ == "__main__":
-    main()
+    run('main()')
