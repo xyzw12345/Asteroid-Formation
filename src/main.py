@@ -27,6 +27,7 @@ def main():
 
     # 3. Run Simulation
     sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL)
+    # sim.run_interactive(dt_max_vis=TIME_STEP)
 
     print("--- Simulation Complete ---")
 

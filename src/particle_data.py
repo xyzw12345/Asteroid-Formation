@@ -26,6 +26,7 @@ class ParticleData:
         # Management properties
         self.ids: np.ndarray = np.zeros(capacity, dtype=np.int64) # Unique identifier
         self.active: np.ndarray = np.zeros(capacity, dtype=bool) # Activity status
+        self.merge_status: np.ndarray = np.full(capacity, -1, dtype=np.int64)
 
         self._next_id: int = 0
 
@@ -43,6 +44,7 @@ class ParticleData:
         self.acceleration[idx] = np.zeros(3, dtype=np.float64) # Init accel to zero
         self.ids[idx] = self._next_id
         self.active[idx] = True
+        self.merge_status[idx] = idx
 
         self.n_particles += 1
         self._next_id += 1
@@ -94,6 +96,29 @@ class ParticleData:
         """Returns the number of active particles."""
         return self.num_active_particles
 
+    def get_merge_status(self, index_x):
+        idx = self.merge_status[index_x]
+        if idx == -1 or idx == index_x:
+            return idx
+        self.merge_status[index_x] = self.get_merge_status(idx)
+        return self.merge_status[index_x]
+
+    def merge(self, index_x, index_y): 
+        idx, idy = self.get_merge_status(index_x), self.get_merge_status(index_y)
+        if (not self.active[idx]) or (not self.active[idy]) or idx == idy:
+            return
+        if self.mass[idx] > self.mass[idy]:
+            idx, idy = idy, idx
+        self.remove_particle(idx)
+        self.merge_status[idx] = idy
+        mx, my = self.mass[idx], self.mass[idy]
+        rx, ry = mx / (mx + my), my / (mx + my)
+        self.position[idy] = rx * self.position[idx] + ry * self.position[idy]
+        self.velocity[idy] = rx * self.velocity[idx] + ry * self.velocity[idy]
+        self.acceleration[idy] = rx * self.acceleration[idx] + ry * self.acceleration[idy]
+        self.mass[idy] = self.mass[idx] + self.mass[idy]
+        self.radius[idy] = (self.radius[idx]**3 + self.radius[idy]**3)**(1./3.)
+
     def compact(self, verbose=True):
         """
         Removes inactive particles and compacts the arrays.
@@ -113,6 +138,8 @@ class ParticleData:
         self.ids[:num_active] = self.ids[:self.n_particles][active_mask]
         self.active[:num_active] = True
         self.active[num_active:self.n_particles] = False # Ensure rest are inactive
+        self.merge_status[:num_active] = np.arange(0, num_active, 1)
+        self.merge_status[num_active:self.n_particles] = -1
 
         # Clear the remaining (now unused) part of the arrays
         self.position[num_active:self.n_particles].fill(0)
