@@ -1,8 +1,7 @@
 import time
 import numpy as np
 from .particle_data import ParticleData
-from .physics import compute_accelerations_cpu
-from .collision_detection import check_for_overlaps, get_min_pairwise_dist
+from .physics import compute_accelerations_cpu, check_for_overlaps, get_min_pairwise_dist
 from .integrator import kick, drift
 from .visualization import plot_particles
 from .interactive_visualizer import InteractiveVisualizerVisPy
