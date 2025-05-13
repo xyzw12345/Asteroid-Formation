@@ -21,14 +21,24 @@ def check_for_overlaps(particles: ParticleData, step_num: int):
         for j in range(i + 1, len(active_idx)):
             # pos_i = positions[i], pos_j = positions[j]
             # r_i = radii[i], r_j = radii[j]
-            diff = positions[active_idx[i]] - positions[active_idx[j]]
+            diff = positions[i] - positions[j]
             dist_sq = np.sum(diff**2)
-            sum_radii = radii[active_idx[i]] + radii[active_idx[j]]
+            sum_radii = radii[i] + radii[j]
 
             if dist_sq < sum_radii**2:
                 # Overlap detected!
                 dist = np.sqrt(dist_sq)
-                print(f"Step {step_num}: OVERLAP! Particles {original_ids[active_idx[i]]} and {original_ids[active_idx[j]]} "
+                print(f"Step {step_num}: OVERLAP! Particles {original_ids[i]} and {original_ids[j]} "
                       f"dist: {dist:.3e}, sum_radii: {sum_radii:.3e}")
-                collided_pairs.append((original_ids[active_idx[i]], original_ids[active_idx[j]]))
+                collided_pairs.append((original_ids[i], original_ids[j]))
     return collided_pairs
+
+def get_min_pairwise_dist(particles: ParticleData):
+    min_pairwise_dist = np.inf
+    active_idx = particles.active_indices
+    positions = particles.position[active_idx]
+    for i in range(len(active_idx)):
+        for j in range(i + 1, len(active_idx)):
+            diff = positions[i] - positions[j]
+            min_pairwise_dist = min(min_pairwise_dist, np.linalg.norm(diff))
+    return min_pairwise_dist

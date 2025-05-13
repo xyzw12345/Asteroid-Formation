@@ -27,7 +27,7 @@ def compute_accelerations_cpu(particles: ParticleData, G: float = 1.0, epsilon: 
         dist_sq = np.sum(diff**2, axis=1) # Shape (num_active,)
 
         # Add softening factor
-        dist_sq_softened = dist_sq + epsilon ** 2
+        dist_sq_softened = np.clip(dist_sq, epsilon**2, None)
 
         # Calculate 1 / dist^3, handling potential division by zero carefully
         # Mask out the self-interaction (where dist_sq is zero before softening)

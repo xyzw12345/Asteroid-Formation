@@ -27,8 +27,8 @@ def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
     # Add asteroids
     min_radius = 0.95 # Inner edge of the disk (AU)
     max_radius = 1.05 # Outer edge of the disk (AU)
-    asteroid_mass_min = 1e-12 * SUN_MASS # Very small mass relative to the sun
-    asteroid_mass_max = 1e-9 * SUN_MASS
+    asteroid_mass_min = 1e-3 * SUN_MASS # Very small mass relative to the sun
+    asteroid_mass_max = 1e-2 * SUN_MASS
     density = 9.280e6 # taken to be the density of the earth
 
     for _ in range(n_asteroids):
@@ -45,14 +45,13 @@ def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
         vy = speed_circ * np.cos(theta)
         vz = 0
         # Add small random velocity component (e.g., 1% of circular speed)
-        perturbation_scale = 0.01
+        perturbation_scale = 0.1
         vx += np.random.normal(0, perturbation_scale * speed_circ)
         vy += np.random.normal(0, perturbation_scale * speed_circ)
         vz += np.random.normal(0, perturbation_scale * speed_circ * 0.1) # Smaller z velocity perturbation
 
         # Mass and Radius
         mass = np.random.uniform(asteroid_mass_min, asteroid_mass_max)
-        # Radius = (3 * mass / (4 * pi * density))^(1/3) 
         radius = (3 * mass / (4 * np.pi * density))**(1./3.) 
 
         particles.add_particle(pos=[x, y, z], vel=[vx, vy, vz], mass=mass, radius=radius)

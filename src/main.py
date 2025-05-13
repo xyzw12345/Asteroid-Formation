@@ -5,10 +5,10 @@ from .simulation import Simulation
 def main():
     # --- Simulation Parameters ---
     NUM_ASTEROIDS = 100       # Number of asteroids
-    MAX_PARTICLES = NUM_ASTEROIDS + 10 # Capacity slightly larger than needed
+    MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     TIME_STEP = 0.001       # Simulation time step (e.g., in years/2pi if G=1, SunMass=1, Dist=AU)
-    NUM_STEPS = 10000        # Period of simulation
-    PLOT_INTERVAL = 20       # Period of Saving plot
+    NUM_STEPS = 30000        # Period of simulation
+    PLOT_INTERVAL = 400       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -26,7 +26,7 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL)
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL)
 
     print("--- Simulation Complete ---")
 
