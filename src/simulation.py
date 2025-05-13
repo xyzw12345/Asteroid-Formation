@@ -1,8 +1,7 @@
 import time
 import numpy as np
 from .particle_data import ParticleData
-from .physics import compute_accelerations_cpu
-from .collision_detection import check_for_overlaps, get_min_pairwise_dist
+from .physics import compute_accelerations_cpu, check_for_overlaps, get_min_pairwise_dist
 from .integrator import kick, drift
 from .visualization import plot_particles
 from .interactive_visualizer import InteractiveVisualizerVisPy
@@ -86,6 +85,8 @@ class Simulation:
         colliding_pairs = check_for_overlaps(self.particles, self.time)
         for i, j in colliding_pairs:
             self.particles.merge(i, j)
+
+        self.particles.compact()    
     
     def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA):
         """
@@ -137,41 +138,41 @@ class Simulation:
         if plot_interval:
              plot_particles(self.particles, step=num_steps, time=self.time, save=True, final=True)
 
-    def run_interactive(self, dt_max_vis: float, eta_adaptive_dt: float = DEFAULT_ETA):
-        """
-        Runs the simulation with an interactive VisPy visualizer.
-        Each call to the visualizer's timer will advance the simulation one effective step.
-        """
-        print(f"Starting INTERACTIVE simulation with N={self.particles.num_active_particles} active particles.")
-        print(f"Max dt for visualization steps={dt_max_vis}, G={self.G}, epsilon={self.epsilon}, eta={eta_adaptive_dt}")
+    # def run_interactive(self, dt_max_vis: float, eta_adaptive_dt: float = DEFAULT_ETA):
+    #     """
+    #     Runs the simulation with an interactive VisPy visualizer.
+    #     Each call to the visualizer's timer will advance the simulation one effective step.
+    #     """
+    #     print(f"Starting INTERACTIVE simulation with N={self.particles.num_active_particles} active particles.")
+    #     print(f"Max dt for visualization steps={dt_max_vis}, G={self.G}, epsilon={self.epsilon}, eta={eta_adaptive_dt}")
 
-        self.vis = InteractiveVisualizerVisPy(self.particles)
+    #     self.vis = InteractiveVisualizerVisPy(self.particles)
         
-        # Define the callback for the visualizer
-        def advance_sim_and_log():
-            step_start_sim_time_ns = time.perf_counter_ns()
+    #     # Define the callback for the visualizer
+    #     def advance_sim_and_log():
+    #         step_start_sim_time_ns = time.perf_counter_ns()
             
-            # Perform one simulation step
-            self._simulation_single_step(dt_max_vis, eta_adaptive_dt)
+    #         # Perform one simulation step
+    #         self._simulation_single_step(dt_max_vis, eta_adaptive_dt)
             
-            step_end_sim_time_ns = time.perf_counter_ns()
-            sim_duration_ms = (step_end_sim_time_ns - step_start_sim_time_ns) / 1e6
+    #         step_end_sim_time_ns = time.perf_counter_ns()
+    #         sim_duration_ms = (step_end_sim_time_ns - step_start_sim_time_ns) / 1e6
             
-            # Rudimentary logging every N calls or M seconds to avoid spamming console
-            if not hasattr(self, '_vis_step_count'): self._vis_step_count = 0
-            self._vis_step_count += 1
-            if self._vis_step_count % 60 == 0: # Log every ~60 frames
-                 print(f"Sim Time: {self.time:.3e}, Last dt_eff: {self.current_dt_eff:.2e}, Sim Step Calc Time: {sim_duration_ms:.2f} ms")
+    #         # Rudimentary logging every N calls or M seconds to avoid spamming console
+    #         if not hasattr(self, '_vis_step_count'): self._vis_step_count = 0
+    #         self._vis_step_count += 1
+    #         if self._vis_step_count % 60 == 0: # Log every ~60 frames
+    #              print(f"Sim Time: {self.time:.3e}, Last dt_eff: {self.current_dt_eff:.2e}, Sim Step Calc Time: {sim_duration_ms:.2f} ms")
 
-        self.vis.set_simulation_step_callback(advance_sim_and_log)
-        self.vis.update_particle_data() # Initial data load
-        self.vis.start_animation() # This will block until the window is closed
+    #     self.vis.set_simulation_step_callback(advance_sim_and_log)
+    #     self.vis.update_particle_data() # Initial data load
+    #     self.vis.start_animation() # This will block until the window is closed
 
-        print("\nInteractive simulation finished or window closed.")
-        # Potentially save final state or do other cleanup
-        final_pos = self.particles.get_active_positions()
-        if final_pos.size > 0:
-            # Example: save final state using the static plotter
-            # plot_particles(self.particles, step=-1, time=self.time, save=True, final=True)
-            pass
+    #     print("\nInteractive simulation finished or window closed.")
+    #     # Potentially save final state or do other cleanup
+    #     final_pos = self.particles.get_active_positions()
+    #     if final_pos.size > 0:
+    #         # Example: save final state using the static plotter
+    #         # plot_particles(self.particles, step=-1, time=self.time, save=True, final=True)
+    #         pass
     
