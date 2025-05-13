@@ -1,0 +1,44 @@
+import sys
+# Ensure the src directory is in the Python path
+# This is often needed when running scripts directly from within a sub-directory
+# Adjust path if your execution strategy differs (e.g., using package installation)
+import os
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
+
+from .particle_data import ParticleData
+from .initial_conditions import generate_test_disk
+from .simulation import Simulation
+
+def main():
+    # --- Simulation Parameters ---
+    NUM_ASTEROIDS = 100       # Number of asteroids
+    MAX_PARTICLES = NUM_ASTEROIDS + 10 # Capacity slightly larger than needed
+    TIME_STEP = 60 * 60        # Simulation time step (e.g., in years/2pi if G=1, SunMass=1, Dist=AU)
+    TOTAL_TIME = 365 * 24 * 60 * 60         # Period of simulation
+    PLOT_INTERVAL = 30 * 24 * 60 * 60       # Period of Saving plot
+
+    NUM_STEPS = int(TOTAL_TIME / TIME_STEP)
+    PLOT_INTERVAL_STEPS = int(PLOT_INTERVAL / TIME_STEP)
+
+    print("--- N-Body Simulation Setup ---")
+    print(f"Number of asteroids: {NUM_ASTEROIDS}")
+    print(f"Time step (dt): {TIME_STEP}")
+    print(f"Number of steps: {NUM_STEPS}")
+    print(f"Plot interval: {PLOT_INTERVAL}")
+
+    # 1. Generate Initial Conditions
+    particles = generate_test_disk(n_asteroids=NUM_ASTEROIDS, max_particles=MAX_PARTICLES)
+    # particles = ParticleData(2)
+    # particles.add_particle([0, 0, 0], [0, 0, 0], 1, 1e-5)
+    # particles.add_particle([1e2, 0, 0], [0, 0, 0], 1, 1e-5)
+
+    # 2. Create Simulation Instance
+    sim = Simulation(particles) # Uses default G and epsilon from simulation.py
+
+    # 3. Run Simulation
+    sim.run(dt=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL_STEPS)
+
+    print("--- Simulation Complete ---")
+
+if __name__ == "__main__":
+    main()
