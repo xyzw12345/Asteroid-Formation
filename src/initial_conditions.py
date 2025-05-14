@@ -5,8 +5,10 @@ from .particle_data import ParticleData
 
 G = 1  # Gravitational constant
 SUN_MASS = 1 # Mass of the central star
+DENSITY = 9.280e6 # Density of Earth
 
-def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
+def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: float, max_orbit_radius: float,
+                       min_mass: float, max_mass: float, perturbation_scale: float) -> ParticleData:
     """
     Generates a central star and a disk of asteroids in the XY plane
     with roughly circular Keplerian velocities.
@@ -24,16 +26,9 @@ def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
     # Add the Sun (stationary at the center)
     particles.add_particle(pos=[0, 0, 0], vel=[0, 0, 0], mass=SUN_MASS, radius=1e-8) # Small radius for vis
 
-    # Add asteroids
-    min_radius = 0.95 # Inner edge of the disk (AU)
-    max_radius = 1.05 # Outer edge of the disk (AU)
-    asteroid_mass_min = 1e-12 * SUN_MASS # Very small mass relative to the sun
-    asteroid_mass_max = 1e-9 * SUN_MASS
-    density = 9.280e6 # taken to be the density of the earth
-
     for _ in range(n_asteroids):
         # Position
-        r = np.random.uniform(min_radius, max_radius)
+        r = np.random.uniform(min_orbit_radius, max_orbit_radius)
         theta = np.random.uniform(0, 2 * np.pi)
         x = r * np.cos(theta)
         y = r * np.sin(theta)
@@ -44,16 +39,14 @@ def generate_test_disk(n_asteroids: int, max_particles: int) -> ParticleData:
         vx = -speed_circ * np.sin(theta)
         vy = speed_circ * np.cos(theta)
         vz = 0
-        # Add small random velocity component (e.g., 1% of circular speed)
-        perturbation_scale = 0.01
+        # Add small random velocity component (e.g., 10% of circular speed)
         vx += np.random.normal(0, perturbation_scale * speed_circ)
         vy += np.random.normal(0, perturbation_scale * speed_circ)
         vz += np.random.normal(0, perturbation_scale * speed_circ * 0.1) # Smaller z velocity perturbation
 
         # Mass and Radius
-        mass = np.random.uniform(asteroid_mass_min, asteroid_mass_max)
-        # Radius = (3 * mass / (4 * pi * density))^(1/3) 
-        radius = (3 * mass / (4 * np.pi * density))**(1./3.) 
+        mass = np.random.uniform(min_mass, max_mass)
+        radius = (3 * mass / (4 * np.pi * DENSITY))**(1./3.) 
 
         particles.add_particle(pos=[x, y, z], vel=[vx, vy, vz], mass=mass, radius=radius)
 
