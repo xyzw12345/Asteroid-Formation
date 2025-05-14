@@ -119,6 +119,8 @@ class ParticleData:
         self.mass[idy] = self.mass[idx] + self.mass[idy]
         self.radius[idy] = (self.radius[idx]**3 + self.radius[idy]**3)**(1./3.)
 
+        self.acceleration[idx] = np.zeros(3)
+
     def compact(self, verbose=True):
         """
         Removes inactive particles and compacts the arrays.
