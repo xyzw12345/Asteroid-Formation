@@ -1,20 +1,19 @@
-from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 200       # Number of asteroids
+    NUM_ASTEROIDS = 300       # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADUIS = 1.05
-    MIN_MASS = 1e-6
-    MAX_MASS = 3e-6
+    MIN_MASS = 1e-4
+    MAX_MASS = 3e-4
     PERTURBATION_SCALE = 0.1
     ETA_VALUE = 0.3
-    TIME_STEP = 0.001       # Simulation time step (e.g., in years/2pi if G=1, SunMass=1, Dist=AU)
+    TIME_STEP = 0.001       # Simulation time step in years/2pi
     NUM_STEPS = 30000        # Period of simulation
-    PLOT_INTERVAL = 1000       # Period of Saving plot
+    PLOT_INTERVAL = 100       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -30,7 +29,7 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE)
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False)
     # sim.run_interactive(dt_max_vis=TIME_STEP)
 
     print("--- Simulation Complete ---")
