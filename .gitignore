@@ -177,3 +177,5 @@ cython_debug/
 
 output
 prompt.md
+
+.vscode/

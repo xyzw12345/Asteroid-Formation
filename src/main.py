@@ -3,7 +3,7 @@ from .simulation import Simulation
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 300       # Number of asteroids
+    NUM_ASTEROIDS = 10000       # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADUIS = 1.05
@@ -29,7 +29,7 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False)
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cuda_nbody')
     # sim.run_interactive(dt_max_vis=TIME_STEP)
 
     print("--- Simulation Complete ---")
