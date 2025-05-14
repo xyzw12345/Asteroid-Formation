@@ -4,7 +4,6 @@ from .particle_data import ParticleData
 from .physics import compute_accelerations, check_for_overlaps, get_min_pairwise_dist
 from .integrator import kick, drift
 from .visualization import plot_particles
-from .interactive_visualizer import InteractiveVisualizerVisPy
 
 # Define constants here or import from a config file later
 G_CONST = 1
@@ -86,7 +85,7 @@ class Simulation:
         for i, j in colliding_pairs:
             self.particles.merge(i, j)
     
-    def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy'):
+    def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False):
         """
         Runs the N-body simulation with adaptive timestepping.
 
@@ -95,6 +94,8 @@ class Simulation:
             num_steps: Number of major steps to simulate.
             plot_interval: Save a plot every 'plot_interval' major steps.
             eta_adaptive_dt: Accuracy parameter for adaptive timestepping.
+            backend: The backend for calculation, can be chosen from {'cpu_numpy'}
+            with_plot: If sets to true, saves plot every 'plot_interval' steps, otherwise only log information every 'plot_interval' steps
         """
         print(f"Starting simulation with N={self.particles.num_active_particles} active particles.")
         print(f"Max dt={dt_max}, num_steps={num_steps}, G={self.G}, epsilon={self.epsilon}, eta={eta_adaptive_dt}")
@@ -112,8 +113,10 @@ class Simulation:
                 steps_so_far = step + 1
                 avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
                 print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
-                      f"Avg Step Time: {avg_time_per_major_step:.4f} s")
-                plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
+                      f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
+                      f"Number of Remaining Asteroids: {self.particles.num_active_particles - 1}")
+                if with_plot:
+                    plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
 
 
         end_time_sim = time.time()
