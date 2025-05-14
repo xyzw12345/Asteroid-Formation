@@ -1,8 +1,8 @@
 from .particle_data import ParticleData
 from .computation.cpu_numpy import compute_accelerations_cpu_numpy, check_for_overlaps_cpu_numpy, get_min_pairwise_dist_cpu_numpy
-from .computation.cpp_cuda_kernel.cuda_nbody_lib import compute_accelerations as compute_accelerations_cuda_nbody
-from .computation.cpp_cuda_kernel.cuda_nbody_lib import find_colliding_pairs as check_for_overlaps_cuda_nbody
-from .computation.cpp_cuda_kernel.cuda_nbody_lib import get_min_pairwise_dist as get_min_pairwise_dist_cuda_nbody
+from .computation.cuda_nbody.cuda_nbody_lib import compute_accelerations as compute_accelerations_cuda_nbody
+from .computation.cuda_nbody.cuda_nbody_lib import find_colliding_pairs as check_for_overlaps_cuda_nbody
+from .computation.cuda_nbody.cuda_nbody_lib import get_min_pairwise_dist as get_min_pairwise_dist_cuda_nbody
 
 def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: float = 0.0001, backend='cpu_numpy'):
     """
