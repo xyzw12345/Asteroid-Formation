@@ -52,4 +52,4 @@ def get_min_pairwise_dist(particles: ParticleData, backend='cpu_numpy'):
     active_idx = particles.active_indices
     positions = particles.position[active_idx]
     if backend == 'cpu_numpy':
-        return get_min_pairwise_dist_cpu_numpy(particles.position[particles.active_indices])
+        return get_min_pairwise_dist_cpu_numpy(positions)
