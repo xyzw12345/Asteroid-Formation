@@ -41,7 +41,7 @@ def compute_accelerations_cpu_numpy(positions: np.ndarray, masses: np.ndarray, G
 
         # Sum contributions from all other active particles (j != i)
         # We can achieve this by setting the contribution from i onto itself to zero
-        accel_contrib[i] = 0.0 # Zero out self-contribution explicitly
+        accel_contrib[i] = np.zeros(3) # Zero out self-contribution explicitly
         accel[i] = np.sum(accel_contrib, axis=0)
     return accel
 
@@ -59,11 +59,11 @@ def check_for_overlaps_cpu_numpy(positions: np.ndarray, radii: np.ndarray):
 
     return zip(row_index, column_index)
 
-def get_min_pairwise_dist_cpu_numpy(positions: np.ndarray):
+def get_min_dist_cpu_numpy(positions: np.ndarray):
     """
     Basic O(N^2) calculation for giving minimum pairwise distance.
     """
     diff = positions[np.newaxis, :, :] - positions[:, np.newaxis, :]
     dist = np.linalg.norm(diff, axis=2)
     np.fill_diagonal(dist, np.inf)
-    return np.min(dist)
+    return np.min(dist, axis=1)
