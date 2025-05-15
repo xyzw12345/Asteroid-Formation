@@ -1,4 +1,3 @@
-// src/cuda_kernels/nbody_kernels.cu
 #include "nbody_kernels.h"
 #include <cuda_runtime.h>
 #include <cstdio> // For printf in kernels (debugging)
@@ -55,7 +54,7 @@ __global__ void gravity_kernel(
     }
 }
 
-void compute_accelerations_cuda(
+void compute_accelerations_cuda_n2(
     double* d_accel_out, // Output: device pointer for accelerations (N, 3)
     const double* d_pos,   // Input: device pointer for positions (N, 3)
     const double* d_mass,  // Input: device pointer for masses (N)
@@ -123,7 +122,7 @@ __global__ void min_dist_sq_kernel_inter_block(
 }
 
 
-void get_min_dist_sq_cuda(
+void get_min_dist_sq_cuda_n2(
     double* d_min_dist_output,
     const double* d_pos,
     int num_particles) {
@@ -191,7 +190,7 @@ __global__ void find_colliding_pairs_kernel(
 }
 
 
-int find_colliding_pairs_cuda(
+int find_colliding_pairs_cuda_n2(
     GpuCollisionPair* d_colliding_pairs_buffer_host_provided, // Buffer for pairs (pre-allocated by host)
     int max_pairs_capacity,                                  // Capacity of the buffer
     const double* d_pos,                                     // Device pointer for positions (N, 3)

@@ -235,10 +235,10 @@ else: # GCC/Clang
     cpp_args.extend(['-std=c++17', '-O3', '-fPIC', '-Wall', '-Wextra'])
 
 cuda_extension = Extension(
-    'cuda_nbody_lib', 
+    'cpp_nbody_lib', 
     sources=[
-        'binding.cpp', 
-        'nbody_kernels.cu' # Keep .cu here for CudaBuildExt to find
+        os.path.join('cpp_cuda_ext', 'binding.cpp'), 
+        os.path.join('cpp_cuda_ext', 'n2_kernels.cu') # Keep .cu here for CudaBuildExt to find
     ], 
     include_dirs=[
         pybind11.get_include()
@@ -250,7 +250,7 @@ cuda_extension._needs_cuda = True
 
 
 setup(
-    name='cuda_nbody_lib',
+    name='cpp_nbody_lib',
     version='0.0.1',
     ext_modules=[cuda_extension],
     cmdclass={'build_ext': CudaBuildExt}

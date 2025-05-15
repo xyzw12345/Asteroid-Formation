@@ -34,7 +34,7 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cuda_nbody')
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cuda_n2')
     # sim.run_interactive(dt_max_vis=TIME_STEP)
 
     print("--- Simulation Complete ---")

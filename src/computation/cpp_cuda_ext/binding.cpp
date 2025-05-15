@@ -14,7 +14,7 @@ namespace py = pybind11;
 
 
 // Wrapper for compute_accelerations_cuda
-py::array_t<double> py_compute_accelerations_cuda(
+py::array_t<double> py_compute_accelerations_cuda_n2(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_np,
     py::array_t<double, py::array::c_style | py::array::forcecast> masses_np,
     double G,
@@ -35,7 +35,7 @@ py::array_t<double> py_compute_accelerations_cuda(
     CHECK_CUDA_PYBIND(cudaMemcpy(d_mass, mass_buf.ptr, num_particles * sizeof(double), cudaMemcpyHostToDevice));
 
     // Call the CUDA wrapper
-    NBodyCUDA::compute_accelerations_cuda(d_accel, d_pos, d_mass, num_particles, G, epsilon * epsilon);
+    NBodyCUDA::compute_accelerations_cuda_n2(d_accel, d_pos, d_mass, num_particles, G, epsilon * epsilon);
 
     // Prepare result NumPy array (allocate on host)
     py::array_t<double> accelerations_np_out({pos_buf.shape[0], static_cast<py::ssize_t>(3)});
@@ -53,7 +53,7 @@ py::array_t<double> py_compute_accelerations_cuda(
 }
 
 // Wrapper for get_min_pairwise_dist_sq_cuda
-py::array_t<double> py_get_min_dist_sq_cuda(
+py::array_t<double> py_get_min_dist_sq_cuda_n2(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_np) {
     
     py::buffer_info pos_buf = positions_np.request();
@@ -64,7 +64,7 @@ py::array_t<double> py_get_min_dist_sq_cuda(
     CHECK_CUDA_PYBIND(cudaMalloc(&d_min_dist_out, num_particles * sizeof(double)));
     CHECK_CUDA_PYBIND(cudaMemcpy(d_pos, pos_buf.ptr, num_particles * 3 * sizeof(double), cudaMemcpyHostToDevice));
 
-    NBodyCUDA::get_min_dist_sq_cuda(d_min_dist_out, d_pos, num_particles);
+    NBodyCUDA::get_min_dist_sq_cuda_n2(d_min_dist_out, d_pos, num_particles);
 
     py::array_t<double> min_dist_out({pos_buf.shape[0]});
     py::buffer_info min_dist_out_buf = min_dist_out.request();
@@ -77,7 +77,7 @@ py::array_t<double> py_get_min_dist_sq_cuda(
     return min_dist_out;
 }
 
-std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda(
+std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda_n2(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_np,
     py::array_t<double, py::array::c_style | py::array::forcecast> radii_np) {
     
@@ -104,7 +104,7 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda(
     CHECK_CUDA_PYBIND(cudaMemcpy(d_pos, pos_buf.ptr, num_particles * 3 * sizeof(double), cudaMemcpyHostToDevice));
     CHECK_CUDA_PYBIND(cudaMemcpy(d_radii, radii_buf.ptr, num_particles * sizeof(double), cudaMemcpyHostToDevice));
 
-    int total_collisions_detected = NBodyCUDA::find_colliding_pairs_cuda(
+    int total_collisions_detected = NBodyCUDA::find_colliding_pairs_cuda_n2(
         d_colliding_pairs_buffer, 
         max_pairs_capacity, 
         d_pos, 
@@ -139,17 +139,17 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda(
     return cpu_colliding_pairs; 
 }
 
-PYBIND11_MODULE(cuda_nbody_lib, m) {
+PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.doc() = "CUDA N-body kernels via Pybind11";
-    m.def("compute_accelerations", &py_compute_accelerations_cuda, 
+    m.def("compute_accelerations_cuda_n2", &py_compute_accelerations_cuda_n2, 
           "Compute gravitational accelerations on GPU (N^2)",
           py::arg("positions"), py::arg("masses"), py::arg("G"), py::arg("epsilon"));
     
-    m.def("get_min_dist_sq", &py_get_min_dist_sq_cuda,
+    m.def("get_min_dist_sq_cuda_n2", &py_get_min_dist_sq_cuda_n2,
           "Get minimum pairwise distance on GPU (N^2)",
           py::arg("positions"));
 
-    m.def("find_colliding_pairs", &py_find_colliding_pairs_cuda,
+    m.def("find_colliding_pairs_cuda_n2", &py_find_colliding_pairs_cuda_n2,
             "Find colliding pairs on GPU (N^2)",
             py::arg("positions"), py::arg("radii"));
 }
