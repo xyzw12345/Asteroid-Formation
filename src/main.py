@@ -7,10 +7,10 @@ from .interactive_visualizaer import ThreeDVisualizer
 
 '''def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 100     # Number of asteroids (default:10000)
+    NUM_ASTEROIDS = 1000     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
-    MAX_ORBIT_RADUIS = 1.05
+    MAX_ORBIT_RADIUS = 1.05
     MIN_MASS = 1e-5
     MAX_MASS = 3e-5
     PERTURBATION_SCALE = 0.1
@@ -27,7 +27,7 @@ from .interactive_visualizaer import ThreeDVisualizer
 
     # 1. Generate Initial Conditions
     particles = generate_test_disk(n_asteroids=NUM_ASTEROIDS, max_particles=MAX_PARTICLES, min_orbit_radius=MIN_ORBIT_RADIUS,
-                                   max_orbit_radius=MAX_ORBIT_RADUIS, min_mass=MIN_MASS, max_mass=MAX_MASS, perturbation_scale=PERTURBATION_SCALE)
+                                   max_orbit_radius=MAX_ORBIT_RADIUS, min_mass=MIN_MASS, max_mass=MAX_MASS, perturbation_scale=PERTURBATION_SCALE)
     # particles = ParticleData(3)
     # particles.add_particle([1, 0, 0], [0, 0, 0], 1)
     # particles.add_particle([-1, 0, 0], [0, 0, 0], 1)
