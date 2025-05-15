@@ -5,17 +5,17 @@ from cProfile import run
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 1000     # Number of asteroids
+    NUM_ASTEROIDS = 10000     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADIUS = 1.05
     MIN_MASS = 1e-5
     MAX_MASS = 3e-5
-    PERTURBATION_SCALE = 0.1
-    ETA_VALUE = 0.3
+    PERTURBATION_SCALE = 0.05
+    ETA_VALUE = 0.1
     TIME_STEP = 0.001       # Simulation time step in years/2pi
-    NUM_STEPS = 300000        # Period of simulation
-    PLOT_INTERVAL = 1000       # Period of Saving plot
+    NUM_STEPS = 5000       # Period of simulation
+    PLOT_INTERVAL = 1       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -34,8 +34,10 @@ def main():
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cuda_n2')
-    # sim.run_interactive(dt_max_vis=TIME_STEP)
+
+    # NOTE: If you are using 'cpu_barnes_hut' as the backend, please adjust the hyper-parameter manually in physics.py
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
+            eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_barnes_hut')
 
     print("--- Simulation Complete ---")
 

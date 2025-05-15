@@ -103,6 +103,13 @@ class Simulation:
         start_time_sim = time.perf_counter()
         total_substeps = 0
 
+        if backend == 'cpu_numpy':
+            backend = ('cpu_numpy', 'cpu_numpy', 'cpu_numpy')
+        if backend == 'cuda_n2':
+            backend = ('cuda_n2', 'cuda_n2', 'cuda_n2')
+        if backend == 'cpu_barnes_hut':
+            backend = ('cpu_barnes_hut', 'cpu_spatial_hash', 'cpu_spatial_hash')
+
         for step in range(num_steps):         
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
             total_substeps += 1 # In this scheme, one "substep" is one full adaptive step.
