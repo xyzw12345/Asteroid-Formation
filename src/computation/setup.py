@@ -238,7 +238,7 @@ cuda_extension = Extension(
     'cpp_nbody_lib', 
     sources=[
         os.path.join('cpp_cuda_ext', 'binding.cpp'), 
-        os.path.join('cpp_cuda_ext', 'n2_kernels.cu') # Keep .cu here for CudaBuildExt to find
+        os.path.join('cpp_cuda_ext', 'src_cuda', 'n2_kernels.cu') # Keep .cu here for CudaBuildExt to find
     ], 
     include_dirs=[
         pybind11.get_include()
