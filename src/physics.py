@@ -6,6 +6,7 @@ from .computation.cpp_nbody_lib import find_colliding_pairs_cuda_n2 as check_for
 from .computation.cpp_nbody_lib import get_min_dist_sq_cuda_n2 as get_min_dist_sq_cuda_n2
 from .computation.cpp_nbody_lib import find_colliding_pairs_cpu_sh as check_for_overlaps_cpu_sh
 from .computation.cpp_nbody_lib import get_min_dist_cpu_sh as get_min_dist_cpu_sh
+from .computation.cpp_nbody_lib import compute_accelerations_cpu_barnes_hut as compute_accelerations_cpu_barnes_hut
 
 
 def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: float = 0.0001, backend='cpu_numpy'):
@@ -27,10 +28,17 @@ def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: floa
     particles.acceleration[active_indices] = 0.0
 
     accel = None
-    if backend == 'cpu_numpy':
+    if backend[0] == 'cpu_numpy':
         accel = compute_accelerations_cpu_numpy(positions, masses, G, epsilon)
-    if backend == 'cuda_n2':
+    elif backend[0] == 'cuda_n2':
         accel = compute_accelerations_cuda_n2(positions, masses, G, epsilon)
+    elif backend[0] == 'cpu_barnes_hut':
+        accel = compute_accelerations_cpu_barnes_hut(positions, masses, G, epsilon, 3e-2)
+        # result1 = compute_accelerations_cpu_numpy(positions, masses, G, epsilon)
+        # print(np.mean(np.abs(result1)))
+        # print(np.max(np.abs(result1 - accel)))
+    else:
+        raise RuntimeError(f"Invalid backend selection, got {backend[0]}")
     
     for i, idx in enumerate(active_indices):
         particles.acceleration[idx] = accel[i]
@@ -49,11 +57,14 @@ def check_for_overlaps(particles: ParticleData, backend='cpu_numpy'):
     original_ids = particles.ids[active_idx] # For reporting
 
     collided_pairs = []
-    if backend == 'cpu_numpy':
+    if backend[1] == 'cpu_numpy':
         collided_pairs = check_for_overlaps_cpu_numpy(positions, radii)
-    if backend == 'cuda_n2':
-        # collided_pairs = check_for_overlaps_cuda_n2(positions, radii)
+    elif backend[1] == 'cuda_n2':
+        collided_pairs = check_for_overlaps_cuda_n2(positions, radii)
+    elif backend[1] == 'cpu_spatial_hash':
         collided_pairs = check_for_overlaps_cpu_sh(positions, radii, 1e-3)
+    else:
+        raise RuntimeError(f"Invalid backend selection, got {backend[1]}")
 
     return [(original_ids[i], original_ids[j]) for i, j in collided_pairs]
 
@@ -63,8 +74,11 @@ def get_min_dist(particles: ParticleData, backend='cpu_numpy'):
     """
     active_idx = particles.active_indices
     positions = particles.position[active_idx]
-    if backend == 'cpu_numpy':
+    if backend[2] == 'cpu_numpy':
         return get_min_dist_cpu_numpy(positions)
-    if backend == 'cuda_n2':
-        # return np.sqrt(get_min_dist_sq_cuda_n2(positions))
+    elif backend[2] == 'cuda_n2':
+        return np.sqrt(get_min_dist_sq_cuda_n2(positions))
+    elif backend[2] == 'cpu_spatial_hash':
         return get_min_dist_cpu_sh(positions, 1e-3)
+    else:
+        raise RuntimeError(f"Invalid backend selection, got {backend[2]}")

@@ -7,12 +7,14 @@ OUTPUT_DIR = "./output" # Relative path to output directory from src/
 
 MIN_SPEED = None
 MAX_SPEED = None
+MAX_RANGE = None
 
 def plot_particles(particles: ParticleData, step: int, time: float, save: bool = True, final: bool = False):
     """
     Generates a 2D scatter plot of active particle positions (XY plane).
     Sizes points by mass (log scale) and colors by speed.
     """
+    global MIN_SPEED, MAX_SPEED, MAX_RANGE
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
 
@@ -27,12 +29,10 @@ def plot_particles(particles: ParticleData, step: int, time: float, save: bool =
 
     # Calculate speeds for coloring
     speeds = np.linalg.norm(vel, axis=1)
-    min_speed = np.min(speeds) if speeds.size > 0 else 0
-    max_speed = np.max(speeds) if speeds.size > 0 else 1
     if MIN_SPEED is None:
-       MIN_SPEED = 0.3 * np.min(speeds)
+       MIN_SPEED = 0.3 * (np.min(speeds) if speeds.size > 0 else 0)
     if MAX_SPEED is None:
-       MAX_SPEED = 3 * np.max(speeds)
+       MAX_SPEED = 3 * (np.max(speeds) if speeds.size > 0 else 1)
 
     # Calculate sizes based on mass (use log scale for better visibility)
     # Avoid log(0) for potentially massless particles or very small masses
@@ -62,12 +62,13 @@ def plot_particles(particles: ParticleData, step: int, time: float, save: bool =
 
     # Add a color bar
     cbar = fig.colorbar(scatter, ax=ax)
-    cbar.set_label(f'Speed (min: {min_speed:.2e}, max: {max_speed:.2e})')
+    cbar.set_label(f'Speed (min: {MIN_SPEED:.2e}, max: {MAX_SPEED:.2e})')
 
     # Set plot limits (optional, adjust based on expected system size)
-    max_range = np.max(np.abs(pos[:, :2])) * 1.1 if pos.size > 0 else 5.0
-    ax.set_xlim(-max_range, max_range)
-    ax.set_ylim(-max_range, max_range)
+    if MAX_RANGE is None:
+        MAX_RANGE = (np.max(np.abs(pos[:, :2])) * 1.1 if pos.size > 0 else 5.0) * 1.5
+    ax.set_xlim(-MAX_RANGE, MAX_RANGE)
+    ax.set_ylim(-MAX_RANGE, MAX_RANGE)
     ax.set_aspect('equal', adjustable='box')
 
     ax.set_xlabel("X coordinate")
