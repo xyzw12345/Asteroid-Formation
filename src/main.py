@@ -4,7 +4,7 @@ from .simulation import Simulation
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 2      # Number of asteroids
+    NUM_ASTEROIDS = 300      # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADUIS = 1.05
@@ -14,7 +14,7 @@ def main():
     ETA_VALUE = 0.3
     TIME_STEP = 0.001       # Simulation time step in years/2pi
     NUM_STEPS = 30000        # Period of simulation
-    PLOT_INTERVAL = 1       # Period of Saving plot
+    PLOT_INTERVAL = 100       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -23,11 +23,11 @@ def main():
     print(f"Plot interval: {PLOT_INTERVAL}")
 
     # 1. Generate Initial Conditions
-    # particles = generate_test_disk(n_asteroids=NUM_ASTEROIDS, max_particles=MAX_PARTICLES, min_orbit_radius=MIN_ORBIT_RADIUS,
-    #                                max_orbit_radius=MAX_ORBIT_RADUIS, min_mass=MIN_MASS, max_mass=MAX_MASS, perturbation_scale=PERTURBATION_SCALE)
-    particles = ParticleData(3)
-    particles.add_particle([1, 0, 0], [0, 0, 0], 1)
-    particles.add_particle([-1, 0, 0], [0, 0, 0], 1)
+    particles = generate_test_disk(n_asteroids=NUM_ASTEROIDS, max_particles=MAX_PARTICLES, min_orbit_radius=MIN_ORBIT_RADIUS,
+                                   max_orbit_radius=MAX_ORBIT_RADUIS, min_mass=MIN_MASS, max_mass=MAX_MASS, perturbation_scale=PERTURBATION_SCALE)
+    # particles = ParticleData(3)
+    # particles.add_particle([1, 0, 0], [0, 0, 0], 1)
+    # particles.add_particle([-1, 0, 0], [0, 0, 0], 1)
 
     # 2. Create Simulation Instance
     sim = Simulation(particles) # Uses default G and epsilon from simulation.py

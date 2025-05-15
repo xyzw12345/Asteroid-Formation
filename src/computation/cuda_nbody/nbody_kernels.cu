@@ -45,7 +45,7 @@ __global__ void gravity_kernel(
             double dist_sq = dx * dx + dy * dy + dz * dz;
             double inv_dist_sq = 1.0 / max(dist_sq, epsilon_sq); // Softened distance
             double inv_dist = sqrt(inv_dist_sq);
-            double inv_dist_cubed = inv_dist * inv_dist * inv_dist + 1;
+            double inv_dist_cubed = inv_dist * inv_dist * inv_dist;
 
             double force_mag_over_m_i = G * mass[j] * inv_dist_cubed;
 

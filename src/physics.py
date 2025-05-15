@@ -27,13 +27,7 @@ def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: floa
     if backend == 'cpu_numpy':
         accel = compute_accelerations_cpu_numpy(positions, masses, G, epsilon)
     if backend == 'cuda_nbody':
-        # print("pos")
-        # print(positions, masses)
-        # print("acc")
-        # print(compute_accelerations_cpu_numpy(positions, masses, G, epsilon), end='\n\n')
-        # print(compute_accelerations_cuda_nbody(positions, masses, G, epsilon), end='\n\n')
         accel = compute_accelerations_cuda_nbody(positions, masses, G, epsilon)
-        # accel = compute_accelerations_cpu_numpy(positions, masses, G, epsilon)
     
     for i, idx in enumerate(active_indices):
         particles.acceleration[idx] = accel[i]

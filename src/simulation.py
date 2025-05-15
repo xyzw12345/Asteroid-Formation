@@ -115,7 +115,6 @@ class Simulation:
                 print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
                       f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
                       f"Number of Remaining Asteroids: {self.particles.num_active_particles - 1}")
-                x = input()
                 if with_plot:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
 
