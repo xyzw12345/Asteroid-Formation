@@ -1,8 +1,9 @@
 from .particle_data import ParticleData
-from .computation.cpu_numpy import compute_accelerations_cpu_numpy, check_for_overlaps_cpu_numpy, get_min_pairwise_dist_cpu_numpy
+import numpy as np
+from .computation.cpu_numpy import compute_accelerations_cpu_numpy, check_for_overlaps_cpu_numpy, get_min_dist_cpu_numpy
 from .computation.cuda_nbody.cuda_nbody_lib import compute_accelerations as compute_accelerations_cuda_nbody
 from .computation.cuda_nbody.cuda_nbody_lib import find_colliding_pairs as check_for_overlaps_cuda_nbody
-from .computation.cuda_nbody.cuda_nbody_lib import get_min_pairwise_dist as get_min_pairwise_dist_cuda_nbody
+from .computation.cuda_nbody.cuda_nbody_lib import get_min_dist_sq as get_min_dist_sq_cuda_nbody
 
 def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: float = 0.0001, backend='cpu_numpy'):
     """
@@ -52,13 +53,13 @@ def check_for_overlaps(particles: ParticleData, backend='cpu_numpy'):
 
     return [(original_ids[i], original_ids[j]) for i, j in collided_pairs]
 
-def get_min_pairwise_dist(particles: ParticleData, backend='cpu_numpy'):
+def get_min_dist(particles: ParticleData, backend='cpu_numpy'):
     """
     Calculation for giving minimum pairwise distance.
     """
     active_idx = particles.active_indices
     positions = particles.position[active_idx]
     if backend == 'cpu_numpy':
-        return get_min_pairwise_dist_cpu_numpy(positions)
+        return get_min_dist_cpu_numpy(positions)
     if backend == 'cuda_nbody':
-        return get_min_pairwise_dist_cuda_nbody(positions)
+        return np.sqrt(get_min_dist_sq_cuda_nbody(positions))

@@ -39,7 +39,8 @@ int find_colliding_pairs_cuda(
 );
 
 
-double get_min_pairwise_dist_sq_cuda(
+void get_min_dist_sq_cuda(
+    double* d_min_dist_out,
     const double* d_pos,   // Input: device pointer for positions (N, 3)
     int num_particles
 );

@@ -1,7 +1,7 @@
 import time
 import numpy as np
 from .particle_data import ParticleData
-from .physics import compute_accelerations, check_for_overlaps, get_min_pairwise_dist
+from .physics import compute_accelerations, check_for_overlaps, get_min_dist
 from .integrator import kick, drift
 from .visualization import plot_particles
 
@@ -31,7 +31,7 @@ class Simulation:
         accel_mag = np.linalg.norm(self.particles.acceleration[active_idx], axis=1)
         vel_mag = np.linalg.norm(self.particles.velocity[active_idx], axis=1)
 
-        characteristic_length = get_min_pairwise_dist(self.particles, backend=backend)
+        characteristic_lengths = get_min_dist(self.particles, backend=backend)
 
         # Avoid division by zero if acc or vel is zero
         # dt based on acceleration: dt_a ~ eta * sqrt(characteristic_length / |a|)
@@ -40,7 +40,7 @@ class Simulation:
         min_accel_for_dt = 1e-9
         valid_accel_mask = accel_mag > min_accel_for_dt
         if np.any(valid_accel_mask):
-            dt_accel[valid_accel_mask] = eta * np.sqrt(characteristic_length / accel_mag[valid_accel_mask])
+            dt_accel[valid_accel_mask] = eta * np.sqrt(characteristic_lengths[valid_accel_mask] / accel_mag[valid_accel_mask])
         
         # dt based on velocity: dt_v ~ eta * characteristic_length / |v|
         dt_vel = np.full_like(vel_mag, np.inf)
@@ -48,7 +48,7 @@ class Simulation:
         valid_vel_mask = vel_mag > min_vel_for_dt
         if np.any(valid_vel_mask):
             # Using epsilon as the length scale. Could use particle.radius[active_idx]
-            dt_vel[valid_vel_mask] = eta * characteristic_length / vel_mag[valid_vel_mask]
+            dt_vel[valid_vel_mask] = eta * characteristic_lengths[valid_vel_mask] / vel_mag[valid_vel_mask]
 
         min_dt_crit = np.inf
         if dt_accel.size > 0: min_dt_crit = min(min_dt_crit, np.min(dt_accel))

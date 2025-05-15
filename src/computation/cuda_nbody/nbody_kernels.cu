@@ -43,7 +43,8 @@ __global__ void gravity_kernel(
             double dz = pos_jz - pos_iz;
 
             double dist_sq = dx * dx + dy * dy + dz * dz;
-            double inv_dist = 1.0 / max(dist_sq, epsilon_sq); // Softened distance
+            double inv_dist_sq = 1.0 / max(dist_sq, epsilon_sq); // Softened distance
+            double inv_dist = sqrt(inv_dist_sq);
             double inv_dist_cubed = inv_dist * inv_dist * inv_dist;
 
             double force_mag_over_m_i = G * mass[j] * inv_dist_cubed;
@@ -97,19 +98,11 @@ void compute_accelerations_cuda(
 // We might defer to a CPU version for check_overlap if a GPU N^2 version is too slow/memory hungry.
 
 __global__ void min_dist_sq_kernel_inter_block(
+    double* d_min_dist_output,
     const double* pos, // (N,3)
-    int num_particles,
-    double* d_min_dist_sq_block_results) { // Output: (num_blocks)
-    
-    // Each block computes the min_dist_sq for pairs (i,j) where i is handled by this block
-    // and j iterates over all particles.
-    // This is still N^2 in spirit but distributes the outer loop over blocks.
-    // A further reduction is needed on these block results.
+    int num_particles) {
 
-    extern __shared__ double s_min_dist_sq_thread[]; // Per-thread min found so far in this block
-    
     int i = blockIdx.x * blockDim.x + threadIdx.x;
-    s_min_dist_sq_thread[threadIdx.x] = 1.0e+38; // Positive infinity
 
     if (i < num_particles) {
         double pos_ix = pos[i * 3 + 0];
@@ -129,60 +122,23 @@ __global__ void min_dist_sq_kernel_inter_block(
                 current_min_sq_for_i = dist_sq;
             }
         }
-        s_min_dist_sq_thread[threadIdx.x] = current_min_sq_for_i;
-    }
-    __syncthreads();
-
-    // Reduction within the block (first thread of block writes its result)
-    if (threadIdx.x == 0) {
-        double block_min_sq = 1.0e+38;
-        for (int k = 0; k < blockDim.x; ++k) {
-            if (s_min_dist_sq_thread[k] < block_min_sq) {
-                block_min_sq = s_min_dist_sq_thread[k];
-            }
-        }
-        d_min_dist_sq_block_results[blockIdx.x] = block_min_sq;
+        d_min_dist_output[i] = current_min_sq_for_i;
     }
 }
 
 
-double get_min_pairwise_dist_sq_cuda(
+void get_min_dist_sq_cuda(
+    double* d_min_dist_output,
     const double* d_pos,
     int num_particles) {
-
-    if (num_particles < 2) return 1.0e+38; // Or appropriate infinity
 
     int threads_per_block = 256;
     int blocks_per_grid = (num_particles + threads_per_block - 1) / threads_per_block;
 
-    double* d_block_results;
-    CUDA_CHECK(cudaMalloc(&d_block_results, blocks_per_grid * sizeof(double)));
-
-    // Shared memory for intra-block reduction (size of blockDim.x doubles)
-    size_t shared_mem_size = threads_per_block * sizeof(double);
-
-    min_dist_sq_kernel_inter_block<<<blocks_per_grid, threads_per_block, shared_mem_size>>>(
-        d_pos, num_particles, d_block_results
+    min_dist_sq_kernel_inter_block<<<blocks_per_grid, threads_per_block>>>(
+        d_min_dist_output, d_pos, num_particles
     );
     CUDA_CHECK(cudaGetLastError());
-    CUDA_CHECK(cudaDeviceSynchronize()); // Wait for kernel and ensure errors are caught
-
-    // At this point, d_block_results on GPU has `blocks_per_grid` minimums.
-    // We need to find the minimum among these.
-    // Option 1: Copy to CPU and find min there.
-    // Option 2: Launch another small kernel for final reduction (if blocks_per_grid is large).
-    
-    std::vector<double> h_block_results(blocks_per_grid);
-    CUDA_CHECK(cudaMemcpy(h_block_results.data(), d_block_results, blocks_per_grid * sizeof(double), cudaMemcpyDeviceToHost));
-    CUDA_CHECK(cudaFree(d_block_results));
-
-    double overall_min_dist_sq = 1.0e+38;
-    for (int k = 0; k < blocks_per_grid; ++k) {
-        if (h_block_results[k] < overall_min_dist_sq) {
-            overall_min_dist_sq = h_block_results[k];
-        }
-    }
-    return overall_min_dist_sq;
 }
 
 __global__ void find_colliding_pairs_kernel(

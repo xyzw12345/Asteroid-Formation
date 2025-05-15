@@ -38,8 +38,7 @@ py::array_t<double> py_compute_accelerations_cuda(
     NBodyCUDA::compute_accelerations_cuda(d_accel, d_pos, d_mass, num_particles, G, epsilon * epsilon);
 
     // Prepare result NumPy array (allocate on host)
-    py::ssize_t num_particles_s = static_cast<py::ssize_t>(pos_buf.shape[0]);
-    py::array_t<double> accelerations_np_out({num_particles_s, static_cast<py::ssize_t>(3)});
+    py::array_t<double> accelerations_np_out({pos_buf.shape[0], static_cast<py::ssize_t>(3)});
     py::buffer_info acc_out_buf = accelerations_np_out.request();
 
     // Copy results from GPU to host NumPy array
@@ -54,23 +53,28 @@ py::array_t<double> py_compute_accelerations_cuda(
 }
 
 // Wrapper for get_min_pairwise_dist_sq_cuda
-double py_get_min_pairwise_dist_cuda(
+py::array_t<double> py_get_min_dist_sq_cuda(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_np) {
     
     py::buffer_info pos_buf = positions_np.request();
     int num_particles = static_cast<int>(pos_buf.shape[0]);
 
-    if (num_particles < 2) return std::numeric_limits<double>::infinity();
-
-    double *d_pos;
+    double *d_pos, *d_min_dist_out;
     CHECK_CUDA_PYBIND(cudaMalloc(&d_pos, num_particles * 3 * sizeof(double)));
+    CHECK_CUDA_PYBIND(cudaMalloc(&d_min_dist_out, num_particles * sizeof(double)));
     CHECK_CUDA_PYBIND(cudaMemcpy(d_pos, pos_buf.ptr, num_particles * 3 * sizeof(double), cudaMemcpyHostToDevice));
 
-    double min_dist_sq = NBodyCUDA::get_min_pairwise_dist_sq_cuda(d_pos, num_particles);
+    NBodyCUDA::get_min_dist_sq_cuda(d_min_dist_out, d_pos, num_particles);
+
+    py::array_t<double> min_dist_out({pos_buf.shape[0]});
+    py::buffer_info min_dist_out_buf = min_dist_out.request();
+
+    CHECK_CUDA_PYBIND(cudaMemcpy(min_dist_out_buf.ptr, d_min_dist_out, num_particles * sizeof(double), cudaMemcpyDeviceToHost));
 
     CHECK_CUDA_PYBIND(cudaFree(d_pos));
+    CHECK_CUDA_PYBIND(cudaFree(d_min_dist_out));
     
-    return std::sqrt(min_dist_sq);
+    return min_dist_out;
 }
 
 std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda(
@@ -122,8 +126,8 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda(
             cpu_colliding_pairs.emplace_back(h_pairs_buffer[k].idx1, h_pairs_buffer[k].idx2);
         }
         if (total_collisions_detected > max_pairs_capacity) {
-            // py::print("Warning: Number of collisions (", total_collisions_detected, 
-            //           ") exceeded buffer capacity (", max_pairs_capacity, "). Some collision pairs were not stored.");
+            py::print("Warning: Number of collisions (", total_collisions_detected, 
+                      ") exceeded buffer capacity (", max_pairs_capacity, "). Some collision pairs were not stored.");
             // This print might be too verbose for pybind, consider logging on Python side based on return.
         }
     }
@@ -141,11 +145,11 @@ PYBIND11_MODULE(cuda_nbody_lib, m) {
           "Compute gravitational accelerations on GPU (N^2)",
           py::arg("positions"), py::arg("masses"), py::arg("G"), py::arg("epsilon"));
     
-    m.def("get_min_pairwise_dist", &py_get_min_pairwise_dist_cuda,
+    m.def("get_min_dist_sq", &py_get_min_dist_sq_cuda,
           "Get minimum pairwise distance on GPU (N^2)",
           py::arg("positions"));
 
     m.def("find_colliding_pairs", &py_find_colliding_pairs_cuda,
-            "Find colliding pairs on GPU (N^2 placeholder)",
+            "Find colliding pairs on GPU (N^2)",
             py::arg("positions"), py::arg("radii"));
 }
