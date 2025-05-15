@@ -100,7 +100,7 @@ class Simulation:
         print(f"Starting simulation with N={self.particles.num_active_particles} active particles.")
         print(f"Max dt={dt_max}, num_steps={num_steps}, G={self.G}, epsilon={self.epsilon}, eta={eta_adaptive_dt}")
 
-        start_time_sim = time.time()
+        start_time_sim = time.perf_counter()
         total_substeps = 0
 
         for step in range(num_steps):         
@@ -109,7 +109,7 @@ class Simulation:
 
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
-                step_end_time_sim = time.time()
+                step_end_time_sim = time.perf_counter()
                 steps_so_far = step + 1
                 avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
                 print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
@@ -119,7 +119,7 @@ class Simulation:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
 
 
-        end_time_sim = time.time()
+        end_time_sim = time.perf_counter()
         total_time_sim = end_time_sim - start_time_sim
         print("\nSimulation finished.")
         print(f"Total major steps: {num_steps}, Total effective substeps: {total_substeps}")

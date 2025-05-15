@@ -1,4 +1,3 @@
-// src/cuda_kernels/nbody_kernels.cu
 #include "nbody_kernels.h"
 #include <cuda_runtime.h>
 #include <cstdio> // For printf in kernels (debugging)
@@ -34,18 +33,14 @@ __global__ void gravity_kernel(
         for (int j = 0; j < num_particles; ++j) {
             if (i == j) continue;
 
-            double pos_jx = pos[j * 3 + 0];
-            double pos_jy = pos[j * 3 + 1];
-            double pos_jz = pos[j * 3 + 2];
-
-            double dx = pos_jx - pos_ix;
-            double dy = pos_jy - pos_iy;
-            double dz = pos_jz - pos_iz;
+            double dx = pos[j * 3 + 0] - pos_ix;
+            double dy = pos[j * 3 + 1] - pos_iy;
+            double dz = pos[j * 3 + 2] - pos_iz;
 
             double dist_sq = dx * dx + dy * dy + dz * dz;
             double inv_dist_sq = 1.0 / max(dist_sq, epsilon_sq); // Softened distance
             double inv_dist = sqrt(inv_dist_sq);
-            double inv_dist_cubed = inv_dist * inv_dist * inv_dist;
+            double inv_dist_cubed = inv_dist * inv_dist_sq;
 
             double force_mag_over_m_i = G * mass[j] * inv_dist_cubed;
 
@@ -59,7 +54,7 @@ __global__ void gravity_kernel(
     }
 }
 
-void compute_accelerations_cuda(
+void compute_accelerations_cuda_n2(
     double* d_accel_out, // Output: device pointer for accelerations (N, 3)
     const double* d_pos,   // Input: device pointer for positions (N, 3)
     const double* d_mass,  // Input: device pointer for masses (N)
@@ -127,7 +122,7 @@ __global__ void min_dist_sq_kernel_inter_block(
 }
 
 
-void get_min_dist_sq_cuda(
+void get_min_dist_sq_cuda_n2(
     double* d_min_dist_output,
     const double* d_pos,
     int num_particles) {
@@ -195,7 +190,7 @@ __global__ void find_colliding_pairs_kernel(
 }
 
 
-int find_colliding_pairs_cuda(
+int find_colliding_pairs_cuda_n2(
     GpuCollisionPair* d_colliding_pairs_buffer_host_provided, // Buffer for pairs (pre-allocated by host)
     int max_pairs_capacity,                                  // Capacity of the buffer
     const double* d_pos,                                     // Device pointer for positions (N, 3)
