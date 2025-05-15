@@ -2,10 +2,12 @@ from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 from cProfile import run
+from .data_handler import DynamicWriter, DynamicLoader
+from .interactive_visualizaer import ThreeDVisualizer
 
-def main():
+'''def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 10000     # Number of asteroids
+    NUM_ASTEROIDS = 100     # Number of asteroids (default:10000)
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADUIS = 1.05
@@ -14,7 +16,7 @@ def main():
     PERTURBATION_SCALE = 0.1
     ETA_VALUE = 0.3
     TIME_STEP = 0.001       # Simulation time step in years/2pi
-    NUM_STEPS = 3000        # Period of simulation
+    NUM_STEPS = 30000        # Period of simulation (default 3000)
     PLOT_INTERVAL = 100       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
@@ -31,13 +33,19 @@ def main():
     # particles.add_particle([-1, 0, 0], [0, 0, 0], 1)
 
     # 2. Create Simulation Instance
-    sim = Simulation(particles) # Uses default G and epsilon from simulation.py
+    saver = DynamicWriter('databank.dat')
+    sim = Simulation(particles, saver=saver) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cuda_n2')
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL, eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_numpy')
     # sim.run_interactive(dt_max_vis=TIME_STEP)
 
-    print("--- Simulation Complete ---")
+    print("--- Simulation Complete ---")'''
+def main():
+    reader = DynamicLoader('databank.dat')
+    print(reader.max_step)
+    visualizer = ThreeDVisualizer(reader)
+    visualizer.run()
 
 if __name__ == "__main__":
     # run('main()')
