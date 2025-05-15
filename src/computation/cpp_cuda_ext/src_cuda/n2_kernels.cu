@@ -1,4 +1,4 @@
-#include "nbody_kernels.h"
+#include "../nbody_kernels.h"
 #include <cuda_runtime.h>
 #include <cstdio> // For printf in kernels (debugging)
 

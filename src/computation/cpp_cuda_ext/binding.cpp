@@ -139,6 +139,94 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda_n2(
     return cpu_colliding_pairs; 
 }
 
+std::vector<SpatialHashCPU::ParticleInfo> prepare_particle_info_vector(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np) {
+    py::buffer_info pos_buf = positions_active_np.request();
+
+    py::ssize_t num_active = pos_buf.shape[0];
+
+    if (pos_buf.ndim != 2 || pos_buf.shape[1] != 3) {
+        throw std::runtime_error("Positions must be an N x 3 array");
+    }
+
+    std::vector<SpatialHashCPU::ParticleInfo> p_info_vec(num_active);
+    const double* pos_ptr = static_cast<const double*>(pos_buf.ptr);
+
+    for (py::ssize_t i = 0; i < num_active; ++i) {
+        p_info_vec[i].pos = {pos_ptr[i * 3 + 0], pos_ptr[i * 3 + 1], pos_ptr[i * 3 + 2]};
+        p_info_vec[i].current_idx = static_cast<int>(i); // Index within this active set
+    }
+    return p_info_vec;
+}
+
+
+// --- Pybind11 Wrapper for CPU Spatial Hash Collision Detection ---
+std::vector<std::tuple<int, int>> py_find_colliding_pairs_sh_cpu(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np,
+    py::array_t<double, py::array::c_style | py::array::forcecast> radii_active_np,
+    double target_cell_size) {
+    
+    py::buffer_info radii_buf = radii_active_np.request();
+    const double* radii_ptr = static_cast<const double*>(radii_buf.ptr);
+    py::ssize_t num_active = positions_active_np.request().shape[0];
+    
+    if (num_active < 2) {
+        return {}; // Return empty list
+    }
+
+    std::vector<SpatialHashCPU::ParticleInfo> p_info_vec = prepare_particle_info_vector(
+        positions_active_np
+    );
+
+    // Call your C++ CPU implementation
+    // Assuming your C++ functions are in NBodyCPU namespace, adjust if not.
+    // If they are global, remove NBodyCPU::
+    std::vector<std::tuple<int, int>> colliding_pairs = 
+        SpatialHashCPU::find_colliding_pairs_spatial_hash_cpu( // Or just find_colliding_pairs_spatial_hash_cpu
+            p_info_vec.data(), 
+            radii_ptr,
+            static_cast<int>(num_active), 
+            target_cell_size
+        );
+    
+    // Pybind11 automatically converts std::vector<std::tuple<int, int>> to Python list of tuples
+    return colliding_pairs;
+}
+
+// --- Pybind11 Wrapper for CPU Spatial Hash Get Min Distance Array ---
+py::array_t<double> py_get_min_dist_array_sh_cpu(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np,
+    double target_cell_size) {
+
+    py::ssize_t num_active = positions_active_np.request().shape[0];
+    
+    // Create an empty NumPy array for the results first
+    // Shape is (num_active,)
+    py::array_t<double> min_dists_np_out({num_active});
+    py::buffer_info min_dists_buf = min_dists_np_out.request();
+    double* min_dists_ptr = static_cast<double*>(min_dists_buf.ptr);
+
+    if (num_active == 0) {
+        return min_dists_np_out; // Return empty array
+    }
+    if (num_active == 1) { // Handle single particle case specifically if C++ doesn't
+        min_dists_ptr[0] = std::numeric_limits<double>::infinity();
+        return min_dists_np_out;
+    }
+    
+    std::vector<SpatialHashCPU::ParticleInfo> p_info_vec = prepare_particle_info_vector(positions_active_np);
+
+    // Call your C++ CPU implementation
+    SpatialHashCPU::get_min_dist_array_spatial_hash_cpu( // Or just get_min_dist_array_spatial_hash_cpu
+        min_dists_ptr,       // Pass pointer to the NumPy array's buffer
+        p_info_vec.data(),
+        static_cast<int>(num_active),
+        target_cell_size
+    );
+
+    return min_dists_np_out;
+}
+
 PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.doc() = "CUDA N-body kernels via Pybind11";
     m.def("compute_accelerations_cuda_n2", &py_compute_accelerations_cuda_n2, 
@@ -152,4 +240,15 @@ PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.def("find_colliding_pairs_cuda_n2", &py_find_colliding_pairs_cuda_n2,
             "Find colliding pairs on GPU (N^2)",
             py::arg("positions"), py::arg("radii"));
+
+    m.def("find_colliding_pairs_cpu_sh", &py_find_colliding_pairs_sh_cpu,
+          "Find colliding pairs using CPU spatial hashing",
+          py::arg("positions_active"), 
+          py::arg("radii_active"), 
+          py::arg("target_cell_size"));
+
+    m.def("get_min_dist_cpu_sh", &py_get_min_dist_array_sh_cpu,
+          "Get minimum distance to another particle for each particle using CPU spatial hashing",
+          py::arg("positions_active"),
+          py::arg("target_cell_size"));
 }

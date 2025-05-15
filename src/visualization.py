@@ -5,6 +5,9 @@ from .particle_data import ParticleData
 
 OUTPUT_DIR = "./output" # Relative path to output directory from src/
 
+MIN_SPEED = None
+MAX_SPEED = None
+
 def plot_particles(particles: ParticleData, step: int, time: float, save: bool = True, final: bool = False):
     """
     Generates a 2D scatter plot of active particle positions (XY plane).
@@ -26,6 +29,10 @@ def plot_particles(particles: ParticleData, step: int, time: float, save: bool =
     speeds = np.linalg.norm(vel, axis=1)
     min_speed = np.min(speeds) if speeds.size > 0 else 0
     max_speed = np.max(speeds) if speeds.size > 0 else 1
+    if MIN_SPEED is None:
+       MIN_SPEED = 0.3 * np.min(speeds)
+    if MAX_SPEED is None:
+       MAX_SPEED = 3 * np.max(speeds)
 
     # Calculate sizes based on mass (use log scale for better visibility)
     # Avoid log(0) for potentially massless particles or very small masses
@@ -48,7 +55,7 @@ def plot_particles(particles: ParticleData, step: int, time: float, save: bool =
     scatter = ax.scatter(
         pos[:, 0], pos[:, 1], # x and y coordinates
         s=sizes,
-        c=speeds,
+        c=np.clip(speeds, MIN_SPEED, MAX_SPEED),
         cmap='viridis', # Colormap for speed
         alpha=0.7
     )
