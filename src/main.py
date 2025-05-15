@@ -1,19 +1,20 @@
 from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
+from cProfile import run
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 300      # Number of asteroids
+    NUM_ASTEROIDS = 10000     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.95
     MAX_ORBIT_RADUIS = 1.05
-    MIN_MASS = 1e-3
-    MAX_MASS = 3e-3
+    MIN_MASS = 1e-5
+    MAX_MASS = 3e-5
     PERTURBATION_SCALE = 0.1
     ETA_VALUE = 0.3
     TIME_STEP = 0.001       # Simulation time step in years/2pi
-    NUM_STEPS = 30000        # Period of simulation
+    NUM_STEPS = 3000        # Period of simulation
     PLOT_INTERVAL = 100       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
@@ -39,4 +40,5 @@ def main():
     print("--- Simulation Complete ---")
 
 if __name__ == "__main__":
+    # run('main()')
     main()

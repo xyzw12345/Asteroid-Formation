@@ -179,3 +179,5 @@ output
 prompt.md
 
 .vscode/
+
+*.ncu-rep
