@@ -34,16 +34,16 @@ def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: floa
         accel = compute_accelerations_cuda_n2(positions, masses, G, epsilon)
     elif backend[0] == 'cpu_barnes_hut':
         accel = compute_accelerations_cpu_barnes_hut(positions, masses, G, epsilon, 0.1)
-        result1 = compute_accelerations_cuda_n2(positions, masses, G, epsilon)
-        sun_dist = positions - positions[0]
-        sun_dist[0] = np.full(3, np.inf)
-        sun_dist = np.sum(sun_dist**2, axis=1)
-        sun_dist = np.clip(sun_dist, epsilon * epsilon, None)
-        mag = G * masses[0] / ((sun_dist) ** (1.5))
-        sun_accel = mag[:, np.newaxis] * (positions - positions[0])
-        print(np.max(np.abs(result1 - sun_accel)))
-        print(np.max(np.abs(result1)))
-        print(np.max(np.abs((result1 - accel))))
+        # result1 = compute_accelerations_cuda_n2(positions, masses, G, epsilon)
+        # sun_dist = positions - positions[0]
+        # sun_dist[0] = np.full(3, np.inf)
+        # sun_dist = np.sum(sun_dist**2, axis=1)
+        # sun_dist = np.clip(sun_dist, epsilon * epsilon, None)
+        # mag = G * masses[0] / ((sun_dist) ** (1.5))
+        # sun_accel = mag[:, np.newaxis] * (positions - positions[0])
+        # print(np.max(np.abs(result1 - sun_accel)))
+        # print(np.max(np.abs(result1)))
+        # print(np.max(np.abs((result1 - accel))))
     else:
         raise RuntimeError(f"Invalid backend selection, got {backend[0]}")
     

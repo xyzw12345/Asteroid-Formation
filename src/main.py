@@ -9,13 +9,13 @@ def main():
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.99
     MAX_ORBIT_RADIUS = 1.01
-    MIN_MASS = 1e-8
-    MAX_MASS = 3e-8
+    MIN_MASS = 1e-6
+    MAX_MASS = 3e-6
     PERTURBATION_SCALE = 0.01
     ETA_VALUE = 0.1
     TIME_STEP = 0.001       # Simulation time step in years/2pi
     NUM_STEPS = 500000       # Period of simulation
-    PLOT_INTERVAL = 1       # Period of Saving plot
+    PLOT_INTERVAL = 5000       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -37,7 +37,7 @@ def main():
 
     # NOTE: If you are using 'cpu_barnes_hut' as the backend, please adjust the hyper-parameter manually in physics.py
     sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
-            eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_barnes_hut')
+            eta_adaptive_dt=ETA_VALUE, with_plot=True, backend='cuda_n2')
 
     print("--- Simulation Complete ---")
 
