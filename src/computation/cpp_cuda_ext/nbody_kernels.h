@@ -1,5 +1,7 @@
 #pragma once
 #include <unordered_map>
+#include <vector>
+#include <cmath>
 
 namespace SpatialHashCPU {
 
@@ -182,7 +184,6 @@ struct OctreeNode {
     // std::vector<std::complex<double>> multipole_coeffs; // Or other coefficient type
     // std::vector<std::complex<double>> local_coeffs;
 };
-
 
 class BarnesHutTree {
 public:

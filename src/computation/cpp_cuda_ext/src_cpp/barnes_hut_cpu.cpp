@@ -33,9 +33,7 @@ BarnesHutTree::BarnesHutTree(
     }
 
     Point3D root_center = (min_b + max_b) * 0.5;
-    double root_half_width = 0.5 * std::max({max_b.x - min_b.x, 
-                                             max_b.y - min_b.y, 
-                                             max_b.z - min_b.z});
+    double root_half_width = 0.5 * std::max(max_b.x - min_b.x, std::max(max_b.y - min_b.y, max_b.z - min_b.z));
     // Ensure half_width is not zero if all particles are at the same point
     if (root_half_width < 1e-9) { // A small threshold
         root_half_width = 1.0; // Or some default sensible size
@@ -245,28 +243,46 @@ void compute_accelerations_barnes_hut_cpu(
     double G,
     double epsilon,
     double theta) {
+    // The Sun (assumed to be at particle 0) is processed separately.
 
     if (num_active_particles == 0) return;
 
     // 1. Build the tree
-    BarnesHutTree tree(active_pos_ptr, active_mass_ptr, num_active_particles);
+    BarnesHutTree tree(active_pos_ptr + 3, active_mass_ptr + 1, num_active_particles - 1);
     if (tree.root == nullptr) { // Handle case where tree construction failed or no particles
-        for(int i=0; i<num_active_particles * 3; ++i) out_accel_ptr[i] = 0.0;
+        for(int i = 0; i < num_active_particles * 3; ++i) out_accel_ptr[i] = 0.0;
         return;
     }
 
     double theta_sq = theta * theta;
     double epsilon_sq = epsilon * epsilon;
 
+    out_accel_ptr[0] = 0;
+    out_accel_ptr[1] = 0;
+    out_accel_ptr[2] = 0;
+
     // 2. For each particle, calculate force using the tree
-    // Can be parallelized with OpenMP if desired: #pragma omp parallel for
-    for (int i = 0; i < num_active_particles; ++i) {
-        Point3D total_force = tree.calculate_force_on_particle(i, tree.root, theta_sq, epsilon_sq, G);
+    for (int i = 1; i < num_active_particles; ++i) {
+        Point3D total_force = tree.calculate_force_on_particle(i - 1, tree.root, theta_sq, epsilon_sq, G);
     
         out_accel_ptr[i * 3 + 0] = total_force.x;
         out_accel_ptr[i * 3 + 1] = total_force.y;
         out_accel_ptr[i * 3 + 2] = total_force.z;
+        
+        double dx = active_pos_ptr[0] - active_pos_ptr[i * 3 + 0];
+        double dy = active_pos_ptr[1] - active_pos_ptr[i * 3 + 1];
+        double dz = active_pos_ptr[2] - active_pos_ptr[i * 3 + 2];
+        double dist_sq = std::max(epsilon * epsilon, dx * dx + dy * dy + dz * dz);
+        double dist = std::sqrt(dist_sq);
+        double force_mag = G / (dist_sq * dist);
 
+        out_accel_ptr[i * 3 + 0] += force_mag * active_mass_ptr[0] * dx;
+        out_accel_ptr[i * 3 + 1] += force_mag * active_mass_ptr[0] * dy;
+        out_accel_ptr[i * 3 + 2] += force_mag * active_mass_ptr[0] * dz;
+
+        out_accel_ptr[0] -= force_mag * active_mass_ptr[i] * dx;
+        out_accel_ptr[1] -= force_mag * active_mass_ptr[i] * dy;
+        out_accel_ptr[2] -= force_mag * active_mass_ptr[i] * dz;
     }
     // Tree (and all its nodes) is automatically cleaned up when `tree` goes out of scope
     // due to BarnesHutTree destructor calling delete on root, which recursively deletes children.

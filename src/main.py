@@ -5,16 +5,16 @@ from cProfile import run
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 10000     # Number of asteroids
+    NUM_ASTEROIDS = 1000     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
-    MIN_ORBIT_RADIUS = 0.95
-    MAX_ORBIT_RADIUS = 1.05
-    MIN_MASS = 1e-5
-    MAX_MASS = 3e-5
-    PERTURBATION_SCALE = 0.05
+    MIN_ORBIT_RADIUS = 0.99
+    MAX_ORBIT_RADIUS = 1.01
+    MIN_MASS = 1e-8
+    MAX_MASS = 3e-8
+    PERTURBATION_SCALE = 0.01
     ETA_VALUE = 0.1
     TIME_STEP = 0.001       # Simulation time step in years/2pi
-    NUM_STEPS = 5000       # Period of simulation
+    NUM_STEPS = 500000       # Period of simulation
     PLOT_INTERVAL = 1       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
