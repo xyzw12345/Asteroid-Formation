@@ -67,6 +67,8 @@ void get_min_dist_array_spatial_hash_cpu(
 
 } // namespace SpatialHashCPU
 
+#ifdef USE_CUDA
+
 namespace NBodyCUDA {
 
 void compute_accelerations_cuda_n2(
@@ -99,6 +101,8 @@ void get_min_dist_sq_cuda_n2(
 );
 
 } // namespace NBodyCUDA
+
+#endif
 
 namespace BarnesHutCPU {
 

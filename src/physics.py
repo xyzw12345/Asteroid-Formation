@@ -1,12 +1,12 @@
 from .particle_data import ParticleData
 import numpy as np
 from .computation.cpu_numpy import compute_accelerations_cpu_numpy, check_for_overlaps_cpu_numpy, get_min_dist_cpu_numpy
-from .computation.cpp_nbody_lib import compute_accelerations_cuda_n2 as compute_accelerations_cuda_n2
-from .computation.cpp_nbody_lib import find_colliding_pairs_cuda_n2 as check_for_overlaps_cuda_n2
-from .computation.cpp_nbody_lib import get_min_dist_sq_cuda_n2 as get_min_dist_sq_cuda_n2
-from .computation.cpp_nbody_lib import find_colliding_pairs_cpu_sh as check_for_overlaps_cpu_sh
-from .computation.cpp_nbody_lib import get_min_dist_cpu_sh as get_min_dist_cpu_sh
-from .computation.cpp_nbody_lib import compute_accelerations_cpu_barnes_hut as compute_accelerations_cpu_barnes_hut
+from .computation.build.cpp_nbody_lib import compute_accelerations_cuda_n2 as compute_accelerations_cuda_n2
+from .computation.build.cpp_nbody_lib import find_colliding_pairs_cuda_n2 as check_for_overlaps_cuda_n2
+from .computation.build.cpp_nbody_lib import get_min_dist_sq_cuda_n2 as get_min_dist_sq_cuda_n2
+from .computation.build.cpp_nbody_lib import find_colliding_pairs_cpu_sh as check_for_overlaps_cpu_sh
+from .computation.build.cpp_nbody_lib import get_min_dist_cpu_sh as get_min_dist_cpu_sh
+from .computation.build.cpp_nbody_lib import compute_accelerations_cpu_barnes_hut as compute_accelerations_cpu_barnes_hut
 
 
 def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: float = 0.0001, backend='cpu_numpy'):

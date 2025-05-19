@@ -2,10 +2,13 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h> // For returning std::vector<std::tuple<int,int>> if needed
 #include "nbody_kernels.h" // Your C++ wrappers for CUDA calls
+#ifdef USE_CUDA
 #include <cuda_runtime.h> // For cudaMalloc, cudaMemcpy, etc.
+#endif
 
 namespace py = pybind11;
 
+#ifdef USE_CUDA
 // Helper to check CUDA calls from binding code
 #define CHECK_CUDA_PYBIND(err) \
     if (err != cudaSuccess) { \
@@ -138,6 +141,7 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_cuda_n2(
 
     return cpu_colliding_pairs; 
 }
+#endif
 
 std::vector<SpatialHashCPU::ParticleInfo> prepare_particle_info_vector(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np) {
@@ -279,6 +283,7 @@ py::array_t<double> py_compute_accelerations_bh_cpu(
 
 PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.doc() = "CUDA N-body kernels via Pybind11";
+#ifdef USE_CUDA
     m.def("compute_accelerations_cuda_n2", &py_compute_accelerations_cuda_n2, 
           "Compute gravitational accelerations on GPU (N^2)",
           py::arg("positions"), py::arg("masses"), py::arg("G"), py::arg("epsilon"));
@@ -290,7 +295,7 @@ PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.def("find_colliding_pairs_cuda_n2", &py_find_colliding_pairs_cuda_n2,
             "Find colliding pairs on GPU (N^2)",
             py::arg("positions"), py::arg("radii"));
-
+#endif
     m.def("find_colliding_pairs_cpu_sh", &py_find_colliding_pairs_sh_cpu,
           "Find colliding pairs using CPU spatial hashing",
           py::arg("positions_active"), 
