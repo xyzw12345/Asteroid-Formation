@@ -119,9 +119,12 @@ class Simulation:
                 step_end_time_sim = time.perf_counter()
                 steps_so_far = step + 1
                 avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
+                num_active_particles = self.particles.num_active_particles
                 print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
                       f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
-                      f"Number of Remaining Asteroids: {self.particles.num_active_particles - 1}")
+                      f"Number of Remaining Asteroids: {num_active_particles - 1}")
+                if num_active_particles < 0.8 * self.particles.n_particles:
+                    self.particles.compact()
                 if with_plot:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
 
