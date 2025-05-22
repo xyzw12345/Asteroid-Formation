@@ -132,25 +132,17 @@ class ParticleData:
         if num_active == self.n_particles:
             return # Nothing to compact
 
-        self.position[:num_active] = self.position[:self.n_particles][active_mask]
-        self.velocity[:num_active] = self.velocity[:self.n_particles][active_mask]
-        self.acceleration[:num_active] = self.acceleration[:self.n_particles][active_mask]
-        self.mass[:num_active] = self.mass[:self.n_particles][active_mask]
-        self.radius[:num_active] = self.radius[:self.n_particles][active_mask]
-        self.ids[:num_active] = self.ids[:self.n_particles][active_mask]
-        self.active[:num_active] = True
-        self.active[num_active:self.n_particles] = False # Ensure rest are inactive
-        self.merge_status[:num_active] = np.arange(0, num_active, 1)
-        self.merge_status[num_active:self.n_particles] = -1
-
-        # Clear the remaining (now unused) part of the arrays
-        self.position[num_active:self.n_particles].fill(0)
-        self.velocity[num_active:self.n_particles].fill(0)
-        self.acceleration[num_active:self.n_particles].fill(0)
-        self.mass[num_active:self.n_particles].fill(0)
-        self.radius[num_active:self.n_particles].fill(0)
-        self.ids[num_active:self.n_particles].fill(0)
+        self.position = self.position[:self.n_particles][active_mask]
+        self.velocity = self.velocity[:self.n_particles][active_mask]
+        self.acceleration = self.acceleration[:self.n_particles][active_mask]
+        self.mass = self.mass[:self.n_particles][active_mask]
+        self.radius = self.radius[:self.n_particles][active_mask]
+        self.ids = np.arange(0, num_active, 1)
+        self.active = np.full(num_active, True)
+        self.merge_status = np.arange(0, num_active, 1)
 
         self.n_particles = num_active
+        self.capacity = num_active
+
         if verbose:
             print(f"Compacted arrays. New active particle count: {self.n_particles}")

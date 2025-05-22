@@ -20,6 +20,8 @@ class Simulation:
         self.epsilon = min(epsilon, np.min(self.particles.radius))
         self.time = 0.0
         self.saver = saver
+        self.mass_snapshots = []
+        self.position_snapshots = [] 
 
     def _calculate_adaptive_dt(self, user_dt: float, eta: float = DEFAULT_ETA, backend = 'cpu_numpy') -> float:
         """
@@ -116,14 +118,26 @@ class Simulation:
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
             total_substeps += 1 # In this scheme, one "substep" is one full adaptive step.
 
+            # --- Save Mass and Position Snapshots ---
+            if plot_interval and (step + 1) % plot_interval == 0:
+                masses = self.particles.mass[self.particles.active_indices]
+                masses = masses[masses < 1]
+                self.mass_snapshots.append(masses)
+
+                positions = self.particles.position[self.particles.active_indices]
+                self.position_snapshots.append(positions)
+
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
                 step_end_time_sim = time.perf_counter()
                 steps_so_far = step + 1
                 avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
+                num_active_particles = self.particles.num_active_particles
                 print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
                       f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
-                      f"Number of Remaining Asteroids: {self.particles.num_active_particles - 1}")
+                      f"Number of Remaining Asteroids: {num_active_particles - 1}")
+                if num_active_particles < 0.8 * self.particles.n_particles:
+                    self.particles.compact()
                 if with_plot:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
                 if self.saver is not None:

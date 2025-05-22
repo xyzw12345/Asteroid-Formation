@@ -47,6 +47,12 @@ def main():
     visualizer = ThreeDVisualizer(loader)
     visualizer.run()'''
 
+    # os.makedirs("frames", exist_ok=True)
+    # plot_mass_histograms(sim.mass_snapshots)
+
+    # density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
+    # plot_density_surface(density_data, bins=30, filename="density_surface.png")
+
 if __name__ == "__main__":
     # run('main()')
     main()
