@@ -199,7 +199,7 @@ std::vector<std::tuple<int, int>> find_colliding_pairs_spatial_hash_cpu(
     int num_active_particles,
     double target_cell_size) {
     
-    std::vector<std::tuple<int, int>> all_colliding_pairs;
+    std::vector<std::tuple<int, int>> all_colliding_pairs = {};
     if (num_active_particles < 2) return all_colliding_pairs;
 
     GridParamsCPU grid_params = calculate_grid_params_cpu(active_particles, num_active_particles, target_cell_size);

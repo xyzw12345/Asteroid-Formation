@@ -8,7 +8,7 @@ SUN_MASS = 1 # Mass of the central star
 DENSITY = 9.280e6 # Density of Earth
 
 def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: float, max_orbit_radius: float,
-                       min_mass: float, max_mass: float, perturbation_scale: float) -> ParticleData:
+                       min_mass: float, max_mass: float, perturbation_scale: float, max_angle: float = 2 * np.pi) -> ParticleData:
     """
     Generates a central star and a disk of asteroids in the XY plane
     with roughly circular Keplerian velocities.
@@ -26,10 +26,11 @@ def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: f
     # Add the Sun (stationary at the center)
     particles.add_particle(pos=[0, 0, 0], vel=[0, 0, 0], mass=SUN_MASS, radius=1e-8) # Small radius for vis
 
+    np.random.seed(1)
     for _ in range(n_asteroids):
         # Position
         r = np.random.uniform(min_orbit_radius, max_orbit_radius)
-        theta = np.random.uniform(0, 2 * np.pi)
+        theta = np.random.uniform(0, max_angle if max_angle is not None else 2 * np.pi)
         x = r * np.cos(theta)
         y = r * np.sin(theta)
         z = np.random.normal(0, 0.01 * r) # Small vertical perturbation
@@ -42,7 +43,7 @@ def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: f
         # Add small random velocity component (e.g., 10% of circular speed)
         vx += np.random.normal(0, perturbation_scale * speed_circ)
         vy += np.random.normal(0, perturbation_scale * speed_circ)
-        vz += np.random.normal(0, perturbation_scale * speed_circ * 0.1) # Smaller z velocity perturbation
+        # vz += np.random.normal(0, perturbation_scale * speed_circ * 0.1) # Smaller z velocity perturbation
 
         # Mass and Radius
         mass = np.random.uniform(min_mass, max_mass)

@@ -281,6 +281,82 @@ py::array_t<double> py_compute_accelerations_bh_cpu(
     return accelerations_out_np; // Return the NumPy array (which was filled by the C++ function)
 }
 
+std::vector<std::tuple<int, int>> py_find_colliding_pairs_n2_cpu(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np,
+    py::array_t<double, py::array::c_style | py::array::forcecast> radii_active_np) {
+    
+    py::buffer_info radii_buf = radii_active_np.request();
+    py::buffer_info pos_buf = positions_active_np.request();
+    const double* radii_ptr = static_cast<const double*>(radii_buf.ptr);
+    const double* pos_ptr = static_cast<const double*>(pos_buf.ptr);
+    py::ssize_t num_active = pos_buf.shape[0];
+    
+    if (num_active < 2) {
+        return {}; // Return empty list
+    }
+
+    // py::print(N2CPU::find_colliding_pairs_n2_cpu(pos_ptr, radii_ptr, static_cast<int>(num_active)));
+
+    // Pybind11 automatically converts std::vector<std::tuple<int, int>> to Python list of tuples
+    return N2CPU::find_colliding_pairs_n2_cpu(pos_ptr, radii_ptr, static_cast<int>(num_active));
+}
+
+py::array_t<double> py_get_min_dist_array_n2_cpu(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np) {
+    
+    py::buffer_info pos_buf = positions_active_np.request();
+    const double* pos_ptr = static_cast<const double*>(pos_buf.ptr);
+    py::ssize_t num_active = pos_buf.shape[0];
+    
+    py::array_t<double> min_dists_np_out({num_active});
+    py::buffer_info min_dists_buf = min_dists_np_out.request();
+    double* min_dists_ptr = static_cast<double*>(min_dists_buf.ptr);
+    
+    N2CPU::get_min_dist_array_n2_cpu(min_dists_ptr, pos_ptr, static_cast<int>(num_active));
+
+    return min_dists_np_out;
+}
+
+py::array_t<double> py_compute_accelerations_n2_cpu(
+    py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np,
+    py::array_t<double, py::array::c_style | py::array::forcecast> masses_active_np,
+    double G,
+    double epsilon) {
+
+    // Request buffer information from input NumPy arrays
+    py::buffer_info pos_buf = positions_active_np.request();
+    py::buffer_info mass_buf = masses_active_np.request();
+
+    // Validate inputs (dimensions, types - though forcecast helps with type)
+    if (pos_buf.ndim != 2 || pos_buf.shape[1] != 3) {
+        throw std::runtime_error("Input positions must be an N x 3 NumPy array.");
+    }
+    if (mass_buf.ndim != 1) {
+        throw std::runtime_error("Input masses must be an N NumPy array.");
+    }
+    py::ssize_t num_active_particles_s = pos_buf.shape[0];
+    if (mass_buf.shape[0] != num_active_particles_s) {
+        throw std::runtime_error("Number of positions and masses must match.");
+    }
+    int num_active_particles = static_cast<int>(num_active_particles_s);
+
+    // Create an output NumPy array for accelerations (N x 3)
+    // Pybind11 will manage the memory for this array.
+    py::array_t<double> accelerations_out_np({num_active_particles_s, static_cast<py::ssize_t>(3)});
+    py::buffer_info accel_out_buf = accelerations_out_np.request();
+
+    // Get raw pointers to the data buffers
+    const double* pos_ptr = static_cast<const double*>(pos_buf.ptr);
+    const double* mass_ptr = static_cast<const double*>(mass_buf.ptr);
+    double* accel_out_ptr = static_cast<double*>(accel_out_buf.ptr);
+
+    // Call your C++ CPU Barnes-Hut implementation
+    // Ensure the namespace matches where your function is defined (e.g., NBodyCPU or BarnesHutCPU)
+    N2CPU::compute_accelerations_n2_cpu(accel_out_ptr, pos_ptr, mass_ptr, num_active_particles, G, epsilon);
+
+    return accelerations_out_np; 
+}
+
 PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.doc() = "CUDA N-body kernels via Pybind11";
 #ifdef USE_CUDA
@@ -327,4 +403,20 @@ PYBIND11_MODULE(cpp_nbody_lib, m) {
             Returns:
                 numpy.ndarray[float64[N, 3]]: Calculated accelerations for active particles.
           )pbdoc");
+    
+    m.def("find_colliding_pairs_cpu_n2", &py_find_colliding_pairs_n2_cpu,
+            "Find colliding pairs using CPU N^2",
+            py::arg("positions_active"), 
+            py::arg("radii_active"));
+  
+    m.def("get_min_dist_cpu_n2", &py_get_min_dist_array_n2_cpu,
+            "Get minimum distance to another particle for each particle using CPU N^2",
+            py::arg("positions_active"));
+  
+    m.def("compute_accelerations_cpu_n2", &py_compute_accelerations_n2_cpu,
+            "Compute gravitational accelerations using CPU N^2",
+            py::arg("positions_active"), // NumPy array (N, 3) of active particle positions
+            py::arg("masses_active"),    // NumPy array (N,) of active particle masses
+            py::arg("G"),                // Gravitational constant (double)
+            py::arg("epsilon"));
 }

@@ -105,6 +105,7 @@ set(CPP_SOURCES
     cpp_cuda_ext/binding.cpp
     cpp_cuda_ext/src_cpp/spatial_hash_cpu.cpp
     cpp_cuda_ext/src_cpp/barnes_hut_cpu.cpp
+    cpp_cuda_ext/src_cpp/cpu_n2.cpp
 )
 
 set(CUDA_SOURCES ) # Initialize empty

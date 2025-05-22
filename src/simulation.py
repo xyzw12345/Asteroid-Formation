@@ -64,6 +64,9 @@ class Simulation:
         # This logic is extracted from the loop in the original run method
 
         # If this is the very first call to _simulation_single_step
+        colliding_pairs = check_for_overlaps(self.particles, backend=backend)
+        for i, j in colliding_pairs:
+            self.particles.merge(i, j)
         if self.time == 0:
             compute_accelerations(self.particles, self.G, self.epsilon, backend=backend)
             dt_eff_step = self._calculate_adaptive_dt(dt_max, eta=eta_adaptive_dt, backend=backend)
@@ -80,10 +83,6 @@ class Simulation:
         kick(self.particles, self.current_dt_eff / 2.0) # Second half kick
 
         self.time += self.current_dt_eff # Actual time advanced
-        
-        colliding_pairs = check_for_overlaps(self.particles, backend=backend)
-        for i, j in colliding_pairs:
-            self.particles.merge(i, j)
     
     def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False):
         """
@@ -109,6 +108,8 @@ class Simulation:
             backend = ('cuda_n2', 'cuda_n2', 'cuda_n2')
         if backend == 'cpu_barnes_hut':
             backend = ('cpu_barnes_hut', 'cpu_spatial_hash', 'cpu_spatial_hash')
+        if backend == 'cpu_n2':
+            backend = ('cpu_n2', 'cpu_spatial_hash', 'cpu_spatial_hash')
 
         for step in range(num_steps):         
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
@@ -127,6 +128,8 @@ class Simulation:
                     self.particles.compact()
                 if with_plot:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
+                if num_active_particles == 1:
+                    break
 
 
         end_time_sim = time.perf_counter()

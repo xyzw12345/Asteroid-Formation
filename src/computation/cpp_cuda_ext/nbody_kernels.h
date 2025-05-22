@@ -229,3 +229,26 @@ void compute_accelerations_barnes_hut_cpu(
 );
 
 } // namespace BarnesHutCPU
+
+namespace N2CPU {
+
+void compute_accelerations_n2_cpu(
+    double* out_accel_ptr,            
+    const double* active_pos_ptr,      
+    const double* active_mass_ptr,     
+    int num_active_particles,
+    double G,
+    double epsilon                    
+);
+
+std::vector<std::tuple<int, int>> find_colliding_pairs_n2_cpu(
+    const double* active_pos_ptr, 
+    const double* active_radii_ptr,  
+    int num_active_particles
+);
+
+void get_min_dist_array_n2_cpu(
+    double* out_min_dists_per_particle,
+    const double* active_pos_ptr,
+    int num_active_particles);
+} // namespace N2CPU

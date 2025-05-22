@@ -263,7 +263,7 @@ void compute_accelerations_barnes_hut_cpu(
     out_accel_ptr[2] = 0;
 
     // 2. For each particle, calculate force using the tree
-    #pragma omp parallel for schedule(static, (num_active_particles / 32) + 1)
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 1; i < num_active_particles; ++i) {
         Point3D total_force = tree.calculate_force_on_particle(i - 1, tree.root, theta_sq, epsilon_sq, G);
     
