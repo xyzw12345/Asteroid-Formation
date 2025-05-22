@@ -91,3 +91,7 @@ class DynamicLoader:
 
     def close(self):
         self.file.close()
+
+    def goto(self, step):
+        assert 0 <= step < self.max_step
+        self.current_step = step

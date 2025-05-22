@@ -3,7 +3,10 @@ from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 from cProfile import run
 from .data_handler import DynamicWriter, DynamicLoader
-from .interactive_visualizaer import ThreeDVisualizer
+# from .interactive_visualizaer import ThreeDVisualizer
+from .interactive_visualizer_modified import ThreeDVisualizer
+from PyQt5.QtWidgets import QApplication
+import sys
 
 def main():
     # --- Simulation Parameters ---
@@ -44,6 +47,7 @@ def main():
 
     print("--- Simulation Complete ---")
 '''def main():
+    app = QApplication(sys.argv)
     loader = DynamicLoader('data.dat')
     visualizer = ThreeDVisualizer(loader)
     visualizer.run()'''
