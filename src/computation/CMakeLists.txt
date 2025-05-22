@@ -148,7 +148,7 @@ endif()
 if(MSVC)
     target_compile_options(${EXTENSION_NAME} PRIVATE /std:c++17 /O2 /EHsc /MD) # /MD for dynamic runtime
 else() # GCC/Clang
-    target_compile_options(${EXTENSION_NAME} PRIVATE -std=c++17 -O3 -fPIC -Wall -Wextra)
+    target_compile_options(${EXTENSION_NAME} PRIVATE -std=c++17 -O3 -fPIC -Wall -Wextra -fopenmp)
 endif()
 
 # CUDA Compiler Flags (if CUDA is enabled)

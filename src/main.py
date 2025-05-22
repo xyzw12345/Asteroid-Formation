@@ -2,10 +2,12 @@ from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 from cProfile import run
+from .data_handler import DynamicWriter, DynamicLoader
+from .interactive_visualizaer import ThreeDVisualizer
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 1000     # Number of asteroids
+    NUM_ASTEROIDS = 100     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.99
     MAX_ORBIT_RADIUS = 1.01
@@ -14,8 +16,8 @@ def main():
     PERTURBATION_SCALE = 0.01
     ETA_VALUE = 0.1
     TIME_STEP = 0.001       # Simulation time step in years/2pi
-    NUM_STEPS = 500000       # Period of simulation
-    PLOT_INTERVAL = 5000       # Period of Saving plot
+    NUM_STEPS = 50000       # Period of simulation
+    PLOT_INTERVAL = 100       # Period of Saving plot
 
     print("--- N-Body Simulation Setup ---")
     print(f"Number of asteroids: {NUM_ASTEROIDS}")
@@ -31,15 +33,19 @@ def main():
     # particles.add_particle([-1, 0, 0], [0, 0, 0], 1)
 
     # 2. Create Simulation Instance
-    sim = Simulation(particles) # Uses default G and epsilon from simulation.py
+    saver = DynamicWriter(filename='data.dat')
+    sim = Simulation(particles, saver=saver) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-
     # NOTE: If you are using 'cpu_barnes_hut' as the backend, please adjust the hyper-parameter manually in physics.py
     sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
-            eta_adaptive_dt=ETA_VALUE, with_plot=True, backend='cuda_n2')
+            eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_numpy')
 
     print("--- Simulation Complete ---")
+'''def main():
+    loader = DynamicLoader('data.dat')
+    visualizer = ThreeDVisualizer(loader)
+    visualizer.run()'''
 
 if __name__ == "__main__":
     # run('main()')
