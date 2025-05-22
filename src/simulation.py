@@ -4,6 +4,7 @@ from .particle_data import ParticleData
 from .physics import compute_accelerations, check_for_overlaps, get_min_dist
 from .integrator import kick, drift
 from .visualization import plot_particles
+from .data_handler import DynamicWriter
 
 # Define constants here or import from a config file later
 G_CONST = 1
@@ -13,11 +14,14 @@ DEFAULT_ETA = 0.05 # Accuracy parameter for adaptive timestep
 MIN_DT_FACTOR = 1e-8 # Factor of user_dt to prevent overly small dt
 
 class Simulation:
-    def __init__(self, particles: ParticleData, G: float = G_CONST, epsilon: float = EPSILON_SOFT):
+    def __init__(self, particles: ParticleData, G: float = G_CONST, epsilon: float = EPSILON_SOFT, saver: DynamicWriter = None):
         self.particles = particles
         self.G = G
         self.epsilon = min(epsilon, np.min(self.particles.radius))
         self.time = 0.0
+        self.saver = saver
+        self.mass_snapshots = []
+        self.position_snapshots = [] 
 
     def _calculate_adaptive_dt(self, user_dt: float, eta: float = DEFAULT_ETA, backend = 'cpu_numpy') -> float:
         """
@@ -115,6 +119,15 @@ class Simulation:
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
             total_substeps += 1 # In this scheme, one "substep" is one full adaptive step.
 
+            # --- Save Mass and Position Snapshots ---
+            if plot_interval and (step + 1) % plot_interval == 0:
+                masses = self.particles.mass[self.particles.active_indices]
+                masses = masses[masses < 1]
+                self.mass_snapshots.append(masses)
+
+                positions = self.particles.position[self.particles.active_indices]
+                self.position_snapshots.append(positions)
+
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
                 step_end_time_sim = time.perf_counter()
@@ -130,6 +143,8 @@ class Simulation:
                     plot_particles(self.particles, step=steps_so_far, time=self.time, save=True)
                 if num_active_particles == 1:
                     break
+                if self.saver is not None:
+                    self.saver.write_step(self.particles, time=self.time)
 
 
         end_time_sim = time.perf_counter()

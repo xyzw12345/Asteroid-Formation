@@ -2,10 +2,12 @@ from .particle_data import ParticleData
 from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 from cProfile import run
+from .data_handler import DynamicWriter, DynamicLoader
+from .interactive_visualizaer import ThreeDVisualizer
 
 def main():
     # --- Simulation Parameters ---
-    NUM_ASTEROIDS = 1000     # Number of asteroids
+    NUM_ASTEROIDS = 100     # Number of asteroids
     MAX_PARTICLES = NUM_ASTEROIDS + 1 # Capacity slightly larger than needed
     MIN_ORBIT_RADIUS = 0.98
     MAX_ORBIT_RADIUS = 1.02
@@ -32,15 +34,25 @@ def main():
     # particles.add_particle([-1, 0, 0], [0, 0, 0], 1, 0.1)
 
     # 2. Create Simulation Instance
-    sim = Simulation(particles) # Uses default G and epsilon from simulation.py
+    saver = DynamicWriter(filename='data.dat')
+    sim = Simulation(particles, saver=saver) # Uses default G and epsilon from simulation.py
 
     # 3. Run Simulation
-
     # NOTE: If you are using 'cpu_barnes_hut' as the backend, please adjust the hyper-parameter manually in physics.py
     sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
             eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_n2')
 
     print("--- Simulation Complete ---")
+'''def main():
+    loader = DynamicLoader('data.dat')
+    visualizer = ThreeDVisualizer(loader)
+    visualizer.run()'''
+
+    # os.makedirs("frames", exist_ok=True)
+    # plot_mass_histograms(sim.mass_snapshots)
+
+    # density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
+    # plot_density_surface(density_data, bins=30, filename="density_surface.png")
 
 if __name__ == "__main__":
     # run('main()')
