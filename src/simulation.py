@@ -18,6 +18,8 @@ class Simulation:
         self.G = G
         self.epsilon = min(epsilon, np.min(self.particles.radius))
         self.time = 0.0
+        self.mass_snapshots = []
+        self.position_snapshots = [] 
 
     def _calculate_adaptive_dt(self, user_dt: float, eta: float = DEFAULT_ETA, backend = 'cpu_numpy') -> float:
         """
@@ -113,6 +115,15 @@ class Simulation:
         for step in range(num_steps):         
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
             total_substeps += 1 # In this scheme, one "substep" is one full adaptive step.
+
+            # --- Save Mass and Position Snapshots ---
+            if plot_interval and (step + 1) % plot_interval == 0:
+                masses = self.particles.mass[self.particles.active_indices]
+                masses = masses[masses < 1]
+                self.mass_snapshots.append(masses)
+
+                positions = self.particles.position[self.particles.active_indices]
+                self.position_snapshots.append(positions)
 
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
