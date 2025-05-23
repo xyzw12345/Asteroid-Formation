@@ -33,7 +33,7 @@ def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: f
     np.random.seed(1)
     for _ in range(n_asteroids):
         # Position
-        r = np.random.uniform(min_orbit_radius, max_orbit_radius)
+        r = np.clip(np.random.normal((min_orbit_radius + max_orbit_radius) / 2, (max_orbit_radius - min_orbit_radius) / 20), min_orbit_radius, max_orbit_radius)
         theta = np.random.uniform(0, max_angle)
         x = r * np.cos(theta)
         y = r * np.sin(theta)
@@ -50,7 +50,7 @@ def generate_test_disk(n_asteroids: int, max_particles: int, min_orbit_radius: f
         # vz += np.random.normal(0, perturbation_scale * speed_circ * 0.1) # Smaller z velocity perturbation
 
         # Mass and Radius
-        mass = np.random.uniform(min_mass, max_mass)
+        mass = np.clip(np.random.normal((min_mass + max_mass) / 2, (max_mass - min_mass) / 20), min_mass, max_mass)
         radius = (3 * mass / (4 * np.pi * density))**(1./3.) 
 
         particles.add_particle(pos=[x, y, z], vel=[vx, vy, vz], mass=mass, radius=radius)

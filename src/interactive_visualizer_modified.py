@@ -70,11 +70,11 @@ class ThreeDVisualizer(QMainWindow):
             return
         speed_min, speed_max = speeds.min(), speeds.max()
         speed_range = speed_max - speed_min + 1e-8
-        speed_colors = color.get_colormap('inferno').map((speeds - speed_min) / speed_range)
+        speed_colors = color.get_colormap('viridis').map((speeds - speed_min) / speed_range)
         self.asteroid_visual.set_data(
             pos=pos,
             face_color=speed_colors,
-            size=2000 * np.sqrt(masses),
+            size=1000 * np.cbrt(masses),
             edge_color=None
         )
 
