@@ -15,31 +15,68 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
-def plot_mass_histograms(mass_snapshots, bins=100, interval=1):
-    from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+def plot_mass_histograms(mass_snapshots, bins=20, interval=1):
     bin_edges = None
     hist_matrix = []
+
+    # 逐个时间片计算直方图
     for masses in mass_snapshots[::interval]:
         counts, edges = np.histogram(masses, bins=bins)
         hist_matrix.append(counts)
         if bin_edges is None:
             bin_edges = edges
 
-    hist_matrix = np.array(hist_matrix)
-    T, M = np.meshgrid(np.arange(hist_matrix.shape[0]), 0.5 * (bin_edges[1:] + bin_edges[:-1]))
+    hist_matrix = np.array(hist_matrix)  # shape: (time_steps, bins)
 
+    # 构造网格
+    T, M = np.meshgrid(
+        np.arange(hist_matrix.shape[0]),                             
+        0.5 * (bin_edges[1:] + bin_edges[:-1])  # bin 中心
+    )
+
+    # 绘图
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(M, T, hist_matrix.T, cmap='viridis')
+    ax.plot_surface(M, T, hist_matrix.T, cmap='viridis', rstride=1, cstride=1)
+
     ax.set_xlabel('Mass')
     ax.set_ylabel('Time Step')
     ax.set_zlabel('Count')
     ax.set_title('Mass Histogram Surface Over Time')
-    # 保存图像
+
     plt.tight_layout()
-    plt.savefig(f"frames/mass_hist.png", dpi=300)
+    plt.savefig("frames/mass_hist.png", dpi=300)
     plt.close()
+
+# def plot_mass_histograms(mass_snapshots, bins=20, interval=1):
+#     from mpl_toolkits.mplot3d import Axes3D
+
+#     bin_edges = None
+#     hist_matrix = []
+#     for masses in mass_snapshots[::interval]:
+#         counts, edges = np.histogram(masses, bins=bins)
+#         hist_matrix.append(counts)
+#         if bin_edges is None:
+#             bin_edges = edges
+
+#     hist_matrix = np.array(hist_matrix)
+#     T, M = np.meshgrid(np.arange(hist_matrix.shape[0]), 0.5 * (bin_edges[1:] + bin_edges[:-1]))
+
+#     fig = plt.figure(figsize=(12, 8))
+#     ax = fig.add_subplot(111, projection='3d')
+#     ax.plot_surface(M, T, hist_matrix.T, cmap='viridis')
+#     ax.set_xlabel('Mass')
+#     ax.set_ylabel('Time Step')
+#     ax.set_zlabel('Count')
+#     ax.set_title('Mass Histogram Surface Over Time')
+#     # 保存图像
+#     plt.tight_layout()
+#     plt.savefig(f"frames/mass_hist.png", dpi=300)
+#     plt.close()
 
 def plot_num(mass_snapshots, interval=1, initial_num = 1000):
     asteroid_num = []
@@ -59,6 +96,9 @@ def plot_num(mass_snapshots, interval=1, initial_num = 1000):
     # 显示或保存图像
     plt.tight_layout()
     plt.savefig(f"frames/num_plot.png", dpi=300)  # 可选保存
+
+
+
 
 # def plot_mass_histograms(mass_snapshots, bins=50, interval=1):
 #     fig = plt.figure(figsize=(12, 8))
