@@ -15,27 +15,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
-def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass_hist.png"):
-    bin_edges = None
+def plot_mass_histograms(mass_snapshots_initial, bins=100, interval=1, path="frames/mass_hist.png"):
+    
+    # Step 1: 全部扫描，统一 bin 范围
+    all_masses_initial = np.concatenate([m[m < 1] for m in mass_snapshots_initial[::interval]])
+    mass_min_initial = np.min(all_masses_initial)
+
+    mass_snapshots = [m/mass_min_initial for m in mass_snapshots_initial[::interval]]
+    all_masses = np.concatenate([m for m in mass_snapshots[::interval]])
+    
+    mass_min, mass_max = np.min(all_masses), np.max(all_masses)
+    bin_edges = np.linspace(mass_min, mass_max, bins + 1)
+    # 归一化处理
+
+    # Step 2: 构造直方图矩阵
     hist_matrix = []
     for masses in mass_snapshots[::interval]:
-        counts, edges = np.histogram(masses, bins=bins)
+        counts, _ = np.histogram(masses, bins=bin_edges)
         hist_matrix.append(counts)
-        if bin_edges is None:
-            bin_edges = edges
+    hist_matrix = np.array(hist_matrix)
+    Z = np.log10(hist_matrix + 1)  # 避免 log(0)
 
-    hist_matrix = np.array(hist_matrix)  # shape: (time_steps, bins)
-
-    # 构造网格
+    # Step 3: 网格和绘图
     T, M = np.meshgrid(
-        np.arange(hist_matrix.shape[0]),                             
-        0.5 * (bin_edges[1:] + bin_edges[:-1])  # bin 中心
+        np.arange(Z.shape[0]),
+        0.5 * (bin_edges[1:] + bin_edges[:-1])
     )
 
-    # 绘图
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(M, T, hist_matrix.T, cmap='viridis', rstride=1, cstride=1)
+    ax.plot_surface(M, T, Z.T, cmap='viridis', rstride=1, cstride=1)
 
     ax.set_xlabel('Mass')
     ax.set_ylabel('Time Step')
@@ -45,6 +54,39 @@ def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass
     plt.tight_layout()
     plt.savefig(path, dpi=300)
     plt.close()
+
+# def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass_hist.png"):
+#     bin_edges = None
+#     hist_matrix = []
+#     for masses in mass_snapshots[::interval]:
+#         masses = masses[masses < 1]  
+#         print(np.min(masses), np.max(masses))
+#         counts, edges = np.histogram(masses, bins=bins)
+#         hist_matrix.append(counts)
+#         if bin_edges is None:
+#             bin_edges = edges
+
+#     hist_matrix = np.array(hist_matrix)  # shape: (time_steps, bins)
+
+#     # 构造网格
+#     T, M = np.meshgrid(
+#         np.arange(hist_matrix.shape[0]),                             
+#         0.5 * (bin_edges[1:] + bin_edges[:-1])  # bin 中心
+#     )
+
+#     # 绘图
+#     fig = plt.figure(figsize=(12, 8))
+#     ax = fig.add_subplot(111, projection='3d')
+#     ax.plot_surface(M, T, hist_matrix.T, cmap='viridis', rstride=1, cstride=1)
+
+#     ax.set_xlabel('Mass')
+#     ax.set_ylabel('Time Step')
+#     ax.set_zlabel('Count')
+#     ax.set_title('Mass Histogram Surface Over Time')
+
+#     plt.tight_layout()
+#     plt.savefig(path, dpi=300)
+#     plt.close()
 
 # def plot_mass_histograms(mass_snapshots, bins=20, interval=1):
 #     from mpl_toolkits.mplot3d import Axes3D
