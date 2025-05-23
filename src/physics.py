@@ -58,7 +58,7 @@ def compute_accelerations(particles: ParticleData, G: float = 1.0, epsilon: floa
         particles.acceleration[idx] = accel[i]
 
 
-def check_for_overlaps(particles: ParticleData, backend='cpu_numpy'):
+def check_for_overlaps(particles: ParticleData, dt: float, backend='cpu_numpy'):
     """
     Overlap detection for reporting. Checks if distance between centers < sum of radii.
     """
@@ -67,6 +67,7 @@ def check_for_overlaps(particles: ParticleData, backend='cpu_numpy'):
         return [] # Not enough particles to collide
 
     positions = particles.position[active_idx]
+    velocity = particles.velocity[active_idx]
     radii = particles.radius[active_idx]
     original_ids = particles.ids[active_idx] # For reporting
 
@@ -78,7 +79,7 @@ def check_for_overlaps(particles: ParticleData, backend='cpu_numpy'):
     elif backend[1] == 'cpu_spatial_hash':
         collided_pairs = check_for_overlaps_cpu_sh(positions, radii, 1e-3)
     elif backend[1] == 'cpu_n2':
-        collided_pairs = check_for_overlaps_cpu_n2(positions, radii)
+        collided_pairs = check_for_overlaps_cpu_n2(positions, velocity, radii, dt)
     else:
         raise RuntimeError(f"Invalid backend selection, got {backend[1]}")
 

@@ -22,6 +22,7 @@ class Simulation:
         self.saver = saver
         self.mass_snapshots = []
         self.position_snapshots = [] 
+        self.num_particles_snapshot = []
 
     def _calculate_adaptive_dt(self, user_dt: float, eta: float = DEFAULT_ETA, backend = 'cpu_numpy') -> float:
         """
@@ -68,9 +69,6 @@ class Simulation:
         # This logic is extracted from the loop in the original run method
 
         # If this is the very first call to _simulation_single_step
-        colliding_pairs = check_for_overlaps(self.particles, backend=backend)
-        for i, j in colliding_pairs:
-            self.particles.merge(i, j)
         if self.time == 0:
             compute_accelerations(self.particles, self.G, self.epsilon, backend=backend)
             dt_eff_step = self._calculate_adaptive_dt(dt_max, eta=eta_adaptive_dt, backend=backend)
@@ -82,13 +80,18 @@ class Simulation:
             self.current_dt_eff = self._calculate_adaptive_dt(dt_max, eta=eta_adaptive_dt, backend=backend)
             kick(self.particles, self.current_dt_eff / 2.0)
 
+        colliding_pairs = check_for_overlaps(self.particles, self.current_dt_eff, backend=backend)
+        for i, j in colliding_pairs:
+            self.particles.merge(i, j)
+        
         drift(self.particles, self.current_dt_eff)
         compute_accelerations(self.particles, self.G, self.epsilon, backend=backend) # New accelerations
         kick(self.particles, self.current_dt_eff / 2.0) # Second half kick
 
         self.time += self.current_dt_eff # Actual time advanced
     
-    def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False):
+    def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False,
+            verbose = False):
         """
         Runs the N-body simulation with adaptive timestepping.
 
@@ -113,7 +116,7 @@ class Simulation:
         if backend == 'cpu_barnes_hut':
             backend = ('cpu_barnes_hut', 'cpu_spatial_hash', 'cpu_spatial_hash')
         if backend == 'cpu_n2':
-            backend = ('cpu_n2', 'cpu_spatial_hash', 'cpu_spatial_hash')
+            backend = ('cpu_n2', 'cpu_n2', 'cpu_n2')
 
         for step in range(num_steps):         
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
@@ -128,15 +131,18 @@ class Simulation:
                 positions = self.particles.position[self.particles.active_indices]
                 self.position_snapshots.append(positions)
 
+                self.num_particles_snapshot.append(self.particles.num_active_particles)
+
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
-                step_end_time_sim = time.perf_counter()
-                steps_so_far = step + 1
-                avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
-                num_active_particles = self.particles.num_active_particles
-                print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
-                      f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
-                      f"Number of Remaining Asteroids: {num_active_particles - 1}")
+                if verbose:
+                    step_end_time_sim = time.perf_counter()
+                    steps_so_far = step + 1
+                    avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
+                    num_active_particles = self.particles.num_active_particles
+                    print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
+                        f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
+                        f"Number of Remaining Asteroids: {num_active_particles - 1}")
                 if num_active_particles < 0.8 * self.particles.n_particles:
                     self.particles.compact()
                 if with_plot:

@@ -243,8 +243,10 @@ void compute_accelerations_n2_cpu(
 
 std::vector<std::tuple<int, int>> find_colliding_pairs_n2_cpu(
     const double* active_pos_ptr, 
-    const double* active_radii_ptr,  
-    int num_active_particles
+    const double* active_vel_ptr,
+    const double* active_radii_ptr,
+    int num_active_particles,
+    double dt
 );
 
 void get_min_dist_array_n2_cpu(

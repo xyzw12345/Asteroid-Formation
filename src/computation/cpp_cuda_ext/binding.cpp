@@ -283,12 +283,16 @@ py::array_t<double> py_compute_accelerations_bh_cpu(
 
 std::vector<std::tuple<int, int>> py_find_colliding_pairs_n2_cpu(
     py::array_t<double, py::array::c_style | py::array::forcecast> positions_active_np,
-    py::array_t<double, py::array::c_style | py::array::forcecast> radii_active_np) {
+    py::array_t<double, py::array::c_style | py::array::forcecast> velocity_active_np,
+    py::array_t<double, py::array::c_style | py::array::forcecast> radii_active_np,
+    double dt) {
     
     py::buffer_info radii_buf = radii_active_np.request();
     py::buffer_info pos_buf = positions_active_np.request();
+    py::buffer_info vel_buf = velocity_active_np.request();
     const double* radii_ptr = static_cast<const double*>(radii_buf.ptr);
     const double* pos_ptr = static_cast<const double*>(pos_buf.ptr);
+    const double* vel_ptr = static_cast<const double*>(vel_buf.ptr);
     py::ssize_t num_active = pos_buf.shape[0];
     
     if (num_active < 2) {
@@ -298,7 +302,7 @@ std::vector<std::tuple<int, int>> py_find_colliding_pairs_n2_cpu(
     // py::print(N2CPU::find_colliding_pairs_n2_cpu(pos_ptr, radii_ptr, static_cast<int>(num_active)));
 
     // Pybind11 automatically converts std::vector<std::tuple<int, int>> to Python list of tuples
-    return N2CPU::find_colliding_pairs_n2_cpu(pos_ptr, radii_ptr, static_cast<int>(num_active));
+    return N2CPU::find_colliding_pairs_n2_cpu(pos_ptr, vel_ptr, radii_ptr, static_cast<int>(num_active), dt);
 }
 
 py::array_t<double> py_get_min_dist_array_n2_cpu(
@@ -407,7 +411,10 @@ PYBIND11_MODULE(cpp_nbody_lib, m) {
     m.def("find_colliding_pairs_cpu_n2", &py_find_colliding_pairs_n2_cpu,
             "Find colliding pairs using CPU N^2",
             py::arg("positions_active"), 
-            py::arg("radii_active"));
+            py::arg("velocity_active"), 
+            py::arg("radii_active"),
+            py::arg("dt")
+        );
   
     m.def("get_min_dist_cpu_n2", &py_get_min_dist_array_n2_cpu,
             "Get minimum distance to another particle for each particle using CPU N^2",

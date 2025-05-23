@@ -188,3 +188,7 @@ prompt.md
 *.iml
 out
 gen
+
+data.dat
+./visualization_data
+*.dat

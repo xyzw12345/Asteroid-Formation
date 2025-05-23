@@ -36,7 +36,7 @@ def plot_density_surface(density_data, bins=30, filename="density_surface.png"):
         bins: int，直方图分箱数
         filename: str，保存图片路径
     """
-    os.makedirs(os.path.dirname(f'frames/density.png'), exist_ok=True)
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     hist_matrix = []
     for counts in density_data:
@@ -62,5 +62,5 @@ def plot_density_surface(density_data, bins=30, filename="density_surface.png"):
     ax.set_title("Local Density Evolution Over Time")
 
     plt.tight_layout()
-    plt.savefig(f'frames/density.png', dpi=300)
+    plt.savefig(filename, dpi=300)
     plt.close()

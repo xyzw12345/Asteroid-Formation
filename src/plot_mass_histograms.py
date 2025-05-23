@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
-def plot_mass_histograms(mass_snapshots, bins=100, interval=1):
+def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass_hist.png"):
     from mpl_toolkits.mplot3d import Axes3D
 
     bin_edges = None
@@ -38,7 +38,7 @@ def plot_mass_histograms(mass_snapshots, bins=100, interval=1):
     ax.set_title('Mass Histogram Surface Over Time')
     # 保存图像
     plt.tight_layout()
-    plt.savefig(f"frames/mass_hist.png", dpi=300)
+    plt.savefig(path, dpi=300)
     plt.close()
 
 # def plot_mass_histograms(mass_snapshots, bins=50, interval=1):
