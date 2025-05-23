@@ -16,9 +16,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass_hist.png"):
-    from mpl_toolkits.mplot3d import Axes3D
-
-def plot_mass_histograms(mass_snapshots, bins=20, interval=1):
     bin_edges = None
     hist_matrix = []
     for masses in mass_snapshots[::interval]:
