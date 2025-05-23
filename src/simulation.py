@@ -135,7 +135,7 @@ class Simulation:
 
             # --- Intermediate Output/Visualization ---
             if plot_interval and (step + 1) % plot_interval == 0:
-                print(np.sort(self.particles.mass))
+                # print(np.sort(self.particles.mass))
                 if verbose:
                     step_end_time_sim = time.perf_counter()
                     steps_so_far = step + 1

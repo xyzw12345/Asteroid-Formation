@@ -1,11 +1,11 @@
 [
 {
-    "id": 2,
-    "num_asteroids": 1000,
+    "id": 1,
+    "num_asteroids": 10000,
     "min_orbit_radius": 0.95,
     "max_orbit_radius": 1.05,
-    "min_mass": 1e-6,
-    "max_mass": 2e-6,
+    "min_mass": 1e-5,
+    "max_mass": 2e-5,
     "density": 9.280e6,
     "perturbation_scale": 0.05,
     "eta": 0.1,

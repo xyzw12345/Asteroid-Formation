@@ -59,6 +59,7 @@ def simulation(setting: json, run_index: int, verbose = False):
     sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
             eta_adaptive_dt=ETA_VALUE, with_plot=WITH_PLOT, backend=BACKEND, verbose=verbose)
     
+    print(np.sort(particles.mass[particles.active_indices])[-100:])
     plot_mass_histograms(sim.mass_snapshots, path=f"./visualization_data/{run_index}-{setting_index}-mass_histogram.png")
 
     density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
@@ -74,12 +75,15 @@ def simulation(setting: json, run_index: int, verbose = False):
 if __name__ == "__main__":
     with open('./initial_conditions/1.json', "r") as file:
         json_settings = json.load(file)
-    with ThreadPoolExecutor(max_workers=32) as executor:
-        futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings]
-    app = QApplication(sys.argv)
-    loader = DynamicLoader(f"./visualization_data/1-2-data.dat")
-    visualizer = ThreeDVisualizer(loader)
-    visualizer.run()
+    if len(json_settings) == 1:
+        simulation(json_settings[0], 1, True)
+    else:
+        with ThreadPoolExecutor(max_workers=32) as executor:
+            futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings]
+    # app = QApplication(sys.argv)
+    # loader = DynamicLoader(f"./visualization_data/1-2-data.dat")
+    # visualizer = ThreeDVisualizer(loader)
+    # visualizer.run()
     # for json_setting in json_settings:
     #     simulation(json_setting, run_index=1, verbose=True)
     # run('main()')

@@ -9,6 +9,7 @@ from .data_handler import DynamicLoader
 
 vispy.use('PyQt5')
 
+MIN_SPEED, SPEED_RANGE, BASE_RADIUS = None, None, None
 
 class ThreeDVisualizer(QMainWindow):
     def __init__(self, sim_callback: DynamicLoader):
@@ -48,6 +49,10 @@ class ThreeDVisualizer(QMainWindow):
         from vispy import app
         self.timer = app.Timer(interval=self.interval, connect=self.update)
 
+        self.base_radius = None
+        self.min_speed = None
+        self.max_speed = None
+
     def _init_visuals(self):
         positions, speeds, masses = self.sim_step()
         self.sun_visual = Markers(
@@ -66,15 +71,18 @@ class ThreeDVisualizer(QMainWindow):
         self._update_asteroid_data(speeds[1:], masses[1:], positions[1:])
 
     def _update_asteroid_data(self, speeds, masses, pos):
+        global BASE_RADIUS, MIN_SPEED, SPEED_RANGE
         if len(speeds) == 0:
             return
-        speed_min, speed_max = speeds.min(), speeds.max()
-        speed_range = speed_max - speed_min + 1e-8
-        speed_colors = color.get_colormap('viridis').map((speeds - speed_min) / speed_range)
+        if MIN_SPEED is None:
+            MIN_SPEED, SPEED_RANGE = speeds.min() * 0.5, speeds.max() * 2.0 - speeds.min() * 0.5 + 1e-8
+        if BASE_RADIUS is None:
+            BASE_RADIUS = np.cbrt(np.min(masses))
+        speed_colors = color.get_colormap('viridis').map(np.clip((speeds - MIN_SPEED)/ SPEED_RANGE, 0, 1))
         self.asteroid_visual.set_data(
             pos=pos,
             face_color=speed_colors,
-            size=1000 * np.cbrt(masses),
+            size=5 * np.cbrt(masses) / BASE_RADIUS,
             edge_color=None
         )
 
