@@ -41,6 +41,25 @@ def plot_mass_histograms(mass_snapshots, bins=100, interval=1):
     plt.savefig(f"frames/mass_hist.png", dpi=300)
     plt.close()
 
+def plot_num(mass_snapshots, interval=1, initial_num = 1000):
+    asteroid_num = []
+    for masses in mass_snapshots[::interval]:
+        asteroid_num.append(len(masses))
+    plt.figure(figsize=(10, 6))
+    plt.plot(asteroid_num, linestyle='-', color='b')
+
+    # 图形装饰
+    plt.ylim(0, initial_num)
+    plt.title("Asteroid Number Over Time")
+    plt.xlabel("Time Step")
+    plt.ylabel("Asteroid Num")
+    plt.grid(True)
+    plt.legend()
+
+    # 显示或保存图像
+    plt.tight_layout()
+    plt.savefig(f"frames/num_plot.png", dpi=300)  # 可选保存
+
 # def plot_mass_histograms(mass_snapshots, bins=50, interval=1):
 #     fig = plt.figure(figsize=(12, 8))
 #     ax = fig.add_subplot(111, projection='3d')
