@@ -9,6 +9,16 @@ from .initial_conditions import generate_test_disk
 from .simulation import Simulation
 from cProfile import run
 from .data_handler import DynamicWriter, DynamicLoader
+# from .interactive_visualizaer import ThreeDVisualizer
+from .interactive_visualizer_modified import ThreeDVisualizer
+from plot_mass_histograms import plot_mass_histograms, plot_num
+from plot_density import compute_neighbor_density_over_time, plot_density_surface
+from PyQt5.QtWidgets import QApplication
+import sys
+
+def main():
+    # --- Simulation Parameters ---
+    NUM_ASTEROIDS = 100     # Number of asteroids
 from .interactive_visualizaer import ThreeDVisualizer
 # from .interactive_visualizer_modified import ThreeDVisualizer
 from .plot_mass_histograms import plot_mass_histograms
