@@ -5,6 +5,8 @@ from cProfile import run
 from .data_handler import DynamicWriter, DynamicLoader
 # from .interactive_visualizaer import ThreeDVisualizer
 from .interactive_visualizer_modified import ThreeDVisualizer
+from plot_mass_histograms import plot_mass_histograms, plot_num
+from plot_density import compute_neighbor_density_over_time, plot_density_surface
 from PyQt5.QtWidgets import QApplication
 import sys
 
@@ -46,6 +48,15 @@ def main():
             eta_adaptive_dt=ETA_VALUE, with_plot=False, backend='cpu_n2')
 
     print("--- Simulation Complete ---")
+
+    os.makedirs("frames", exist_ok=True)
+    plot_mass_histograms(sim.mass_snapshots)
+    plot_num(sim.mass_snapshots, initial_num = NUM_ASTEROIDS)
+
+    density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
+    plot_density_surface(density_data, bins=30, filename="density_surface.png")
+
+    print("--- Graph Complete ---")
 '''def main():
     app = QApplication(sys.argv)
     loader = DynamicLoader('data.dat')
