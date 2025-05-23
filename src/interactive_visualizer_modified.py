@@ -45,7 +45,7 @@ class ThreeDVisualizer(QMainWindow):
 
         # Colorbar
         # 创建颜色条
-        colormap = color.get_colormap('inferno')
+        colormap = color.get_colormap('viridis')
         self.colorbar = ColorBar(
             cmap=colormap,
             orientation='right',
@@ -123,11 +123,15 @@ class ThreeDVisualizer(QMainWindow):
         all_speeds = get_all_speeds("data.dat")
         speed_min = np.round(all_speeds.min(), 4)
         speed_max = np.round(all_speeds.max(), 4)
+        if speed_max > 5: 
+            speed_max = 5
         if not self.colorbar_initialized:
             self.colorbar.clim = (speed_min, speed_max)
             self.colorbar_initialized = True
+        speeds[speeds > speed_max] = 5
         speed_range = speed_max - speed_min + 1e-8
-        speed_colors = color.get_colormap('inferno').map((speeds - speed_min) / speed_range)
+        speed_colors = color.get_colormap('viridis').map((speeds - speed_min)/speed_range)
+        # speed_colors = color.get_colormap('inferno').map(np.power((np.log(speeds) - np.log(speed_min))/(np.log(speed_max) - np.log(speed_min)), 3))
         self.asteroid_visual.set_data(
             pos=pos,
             face_color=speed_colors,
@@ -154,6 +158,7 @@ class ThreeDVisualizer(QMainWindow):
             )
             self._update_asteroid_data(new_speed[1:], new_mass[1:], new_pos[1:])
             self.canvas.update()
+
 
     def on_key_press(self, event):
         if event.key == ' ':
