@@ -1,17 +1,18 @@
 import vispy
 import numpy as np
 from vispy import scene, color
-from vispy.scene.visuals import Markers
+from vispy.scene.visuals import Markers, ColorBar, Text
+from vispy.scene import widgets
 from vispy.app import use_app
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QWidget, QSlider, QApplication
 from PyQt5.QtCore import Qt
-from .data_handler import DynamicLoader
+from .data_handler import DynamicLoader, get_all_speeds
 
 vispy.use('PyQt5')
 
 
 class ThreeDVisualizer(QMainWindow):
-    def __init__(self, sim_callback: DynamicLoader):
+    def __init__(self, sim_callback: DynamicLoader, params: dict):
         super().__init__()
         self.sim_step = sim_callback
         self.running = True
@@ -30,6 +31,7 @@ class ThreeDVisualizer(QMainWindow):
         self.view = self.canvas.central_widget.add_view()
         self.view.camera = scene.TurntableCamera(distance=3)
         self.layout.addWidget(self.canvas.native)
+        self.canvas.events.resize.connect(self._on_resize)
 
         # Create slider and add to layout
         self.slider = QSlider(Qt.Horizontal)
@@ -41,12 +43,62 @@ class ThreeDVisualizer(QMainWindow):
         # Canvas events
         self.canvas.events.key_press.connect(self.on_key_press)
 
+        # Colorbar
+        # 创建颜色条
+        colormap = color.get_colormap('inferno')
+        self.colorbar = ColorBar(
+            cmap=colormap,
+            orientation='right',
+            size=(500, 20),
+            label='Speed',
+            label_color = 'white',
+            clim=(0,1),
+            border_color='black',
+            parent=self.canvas.scene  # 直接添加到 scene
+        )
+        self.colorbar.label.font_size = 12
+        canvas_width = self.canvas.size[0]
+        canvas_height = self.canvas.size[1]
+        colorbar_width = 20  # 或者你定义的实际宽度
+        margin = 85
+        self.colorbar.pos = (canvas_width - colorbar_width - margin, canvas_height / 2)  # 你可以调整这个位置来改变颜色条的显示位置
+        self.colorbar_initialized = False
+        # from vispy.visuals.axis import AxisVisual
+        # for child in self.colorbar.children:
+        #     if isinstance(child, AxisVisual):
+        #         child.visible = False
+
+        # Text
+        self.params = params
+        param_text = "\n".join(f"{k} = {v}" for k, v in params.items())
+
+        self.param_display = scene.Text(
+            param_text,
+            color='white',
+            font_size=8,
+            anchor_x='left',
+            anchor_y='top',
+            parent=self.canvas.scene
+        )
+        self.param_display.pos = (10, 200)
+
         # Setup visuals
         self._init_visuals()
 
         # Timer
         from vispy import app
         self.timer = app.Timer(interval=self.interval, connect=self.update)
+
+    def _on_resize(self, event):
+        canvas_width = self.canvas.size[0]
+        canvas_height = self.canvas.size[1]
+        colorbar_width = 85  # 你设置的颜色条宽度
+        margin = 40  # 距离右边的像素
+        if hasattr(self, 'colorbar'):
+            self.colorbar.pos = (canvas_width - colorbar_width / 2 - margin, canvas_height / 2)
+
+        if hasattr(self, 'param_display'):
+            self.title_text.pos = (10, 200)
 
     def _init_visuals(self):
         positions, speeds, masses = self.sim_step()
@@ -68,13 +120,18 @@ class ThreeDVisualizer(QMainWindow):
     def _update_asteroid_data(self, speeds, masses, pos):
         if len(speeds) == 0:
             return
-        speed_min, speed_max = speeds.min(), speeds.max()
+        all_speeds = get_all_speeds("data.dat")
+        speed_min = np.round(all_speeds.min(), 4)
+        speed_max = np.round(all_speeds.max(), 4)
+        if not self.colorbar_initialized:
+            self.colorbar.clim = (speed_min, speed_max)
+            self.colorbar_initialized = True
         speed_range = speed_max - speed_min + 1e-8
         speed_colors = color.get_colormap('inferno').map((speeds - speed_min) / speed_range)
         self.asteroid_visual.set_data(
             pos=pos,
             face_color=speed_colors,
-            size=2000 * np.sqrt(masses),
+            size=100 * masses ** 0.3333,
             edge_color=None
         )
 
@@ -119,6 +176,8 @@ class ThreeDVisualizer(QMainWindow):
         elif event.key == 'R':
             self.reverse = not self.reverse
             print("R")
+        elif event.key == 'D':
+            self.view.camera.distance = 3  #默认值
 
     def on_slider_change(self, value):
         self.running = False
