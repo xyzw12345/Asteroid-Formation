@@ -30,8 +30,9 @@ def simulation(setting: json, run_index: int, verbose = False):
     ETA_VALUE = float(setting['eta'])
     TIME_STEP = float(setting['default_time_step'])       # Simulation time step in years/2pi
     NUM_STEPS = int(setting['num_steps'])    # Period of simulation
+    TIME_PERIOD = float(setting['time_period'])
     WITH_PLOT = bool(setting['with_plot'])
-    PLOT_INTERVAL = int(setting['plot_interval'])     # Period of Saving plot
+    PLOT_INTERVAL = float(setting['plot_interval'])     # Period of Saving plot
     MAX_ANGLE = 2 * np.pi if 'max_angle' not in setting else float(setting['max_angle'])
     BACKEND = setting['backend']
 
@@ -56,7 +57,7 @@ def simulation(setting: json, run_index: int, verbose = False):
 
     # 3. Run Simulation
     # NOTE: If you are using 'cpu_barnes_hut' as the backend, please adjust the hyper-parameter manually in physics.py
-    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, plot_interval=PLOT_INTERVAL,
+    sim.run(dt_max=TIME_STEP, num_steps=NUM_STEPS, time_period=TIME_PERIOD, plot_interval=PLOT_INTERVAL,
             eta_adaptive_dt=ETA_VALUE, with_plot=WITH_PLOT, backend=BACKEND, verbose=verbose)
     
     print(np.sort(particles.mass[particles.active_indices])[-100:])
@@ -65,26 +66,23 @@ def simulation(setting: json, run_index: int, verbose = False):
     density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
     plot_density_surface(density_data, bins=30, filename=f"./visualization_data/{run_index}-{setting_index}-density_surface.png")
 
-    # if verbose:
-    #     print("--- Simulation Complete ---")
-    #     app = QApplication(sys.argv)
-    #     loader = DynamicLoader(f"./visualization_data/{run_index}-{setting_index}-data.dat")
-    #     visualizer = ThreeDVisualizer(loader)
-    #     visualizer.run()
-
 if __name__ == "__main__":
-    with open('./initial_conditions/1.json', "r") as file:
-        json_settings = json.load(file)
-    if len(json_settings) == 1:
-        simulation(json_settings[0], 1, True)
-    else:
-        with ThreadPoolExecutor(max_workers=32) as executor:
-            futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings]
-    # app = QApplication(sys.argv)
-    # loader = DynamicLoader(f"./visualization_data/1-2-data.dat")
-    # visualizer = ThreeDVisualizer(loader)
-    # visualizer.run()
-    # for json_setting in json_settings:
-    #     simulation(json_setting, run_index=1, verbose=True)
-    # run('main()')
-    # main()
+    s = input().strip().split()
+    if s[0] == 'sim':
+        i, j = int(s[1]), int(s[2])
+        with open('./initial_conditions/1.json', "r") as file:
+            json_settings = json.load(file)
+        if len(s) > 3 and s[3] == 'N':
+            for json_setting in json_settings:
+                if i <= int(json_setting['id']) and int(json_setting['id']) <= j:
+                    simulation(json_setting, run_index=1, verbose=True)
+        else:
+            with ThreadPoolExecutor(max_workers=32) as executor:
+                futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings
+                           if i <= int(json_setting['id']) and int(json_setting['id']) <= j]
+    elif s[0] == 'show':
+        i = int(s[1])
+        app = QApplication(sys.argv)
+        loader = DynamicLoader(f"./visualization_data/1-{i}-data.dat")
+        visualizer = ThreeDVisualizer(loader)
+        visualizer.run()

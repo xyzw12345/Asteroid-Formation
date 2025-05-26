@@ -90,7 +90,7 @@ class Simulation:
 
         self.time += self.current_dt_eff # Actual time advanced
     
-    def run(self, dt_max: float, num_steps: int, plot_interval: int = 10, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False,
+    def run(self, dt_max: float, num_steps: int, time_period: float, plot_interval: float = 0.1, eta_adaptive_dt: float = DEFAULT_ETA, backend = 'cpu_numpy', with_plot = False,
             verbose = False):
         """
         Runs the N-body simulation with adaptive timestepping.
@@ -107,7 +107,8 @@ class Simulation:
         print(f"Max dt={dt_max}, num_steps={num_steps}, G={self.G}, epsilon={self.epsilon}, eta={eta_adaptive_dt}")
 
         start_time_sim = time.perf_counter()
-        total_substeps = 0
+        total_steps = 0
+        next_log_step = 0
 
         if backend == 'cpu_numpy':
             backend = ('cpu_numpy', 'cpu_numpy', 'cpu_numpy')
@@ -117,13 +118,13 @@ class Simulation:
             backend = ('cpu_barnes_hut', 'cpu_spatial_hash', 'cpu_spatial_hash')
         if backend == 'cpu_n2':
             backend = ('cpu_n2', 'cpu_n2', 'cpu_n2')
-
-        for step in range(num_steps):         
+        
+        while (total_steps < num_steps or num_steps == -1) and self.time < time_period:       
             self._simulation_single_step(dt_max, eta_adaptive_dt, backend=backend)
-            total_substeps += 1 # In this scheme, one "substep" is one full adaptive step.
+            total_steps += 1 # In this scheme, one "substep" is one full adaptive step.
 
-            # --- Save Mass and Position Snapshots ---
-            if plot_interval and (step + 1) % plot_interval == 0:
+            # --- Intermediate Output/Visualization ---
+            if plot_interval and self.time > next_log_step:
                 masses = self.particles.mass[self.particles.active_indices]
                 masses = masses[masses < 1]
                 self.mass_snapshots.append(masses)
@@ -132,13 +133,11 @@ class Simulation:
                 self.position_snapshots.append(positions)
 
                 self.num_particles_snapshot.append(self.particles.num_active_particles)
-
-            # --- Intermediate Output/Visualization ---
-            if plot_interval and (step + 1) % plot_interval == 0:
-                # print(np.sort(self.particles.mass))
+                
+                next_log_step += plot_interval
                 if verbose:
                     step_end_time_sim = time.perf_counter()
-                    steps_so_far = step + 1
+                    steps_so_far = total_steps + 1
                     avg_time_per_major_step = (step_end_time_sim - start_time_sim) / steps_so_far
                     num_active_particles = self.particles.num_active_particles
                     print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
@@ -157,7 +156,7 @@ class Simulation:
         end_time_sim = time.perf_counter()
         total_time_sim = end_time_sim - start_time_sim
         print("\nSimulation finished.")
-        print(f"Total major steps: {num_steps}, Total effective substeps: {total_substeps}")
+        print(f"Total steps: {total_steps}")
         print(f"Final simulation time: {self.time:.3e}")
         print(f"Total execution time: {total_time_sim:.3f} s")
         if num_steps > 0:
