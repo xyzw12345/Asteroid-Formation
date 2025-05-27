@@ -117,5 +117,22 @@
     "with_plot": false,
     "plot_interval": 0.1,
     "backend": "cpu_n2"
+},
+{
+    "id": 8,
+    "num_asteroids": 1000,
+    "min_orbit_radius": 0.99,
+    "max_orbit_radius": 1.01,
+    "min_mass": 1e-5,
+    "max_mass": 2e-5,
+    "density": 9.280e6,
+    "perturbation_scale": 0.001,
+    "eta": 0.2,
+    "default_time_step": 0.01,
+    "num_steps": -1,
+    "time_period": 10,
+    "with_plot": false,
+    "plot_interval": 0.1,
+    "backend": "cpu_n2"
 }
 ]

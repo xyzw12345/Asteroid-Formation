@@ -28,6 +28,10 @@ class ParticleData:
         self.active: np.ndarray = np.zeros(capacity, dtype=bool) # Activity status
         self.merge_status: np.ndarray = np.full(capacity, -1, dtype=np.int64)
 
+        self.tree_structure = []
+        for i in range(capacity):
+            self.tree_structure.append([i])
+
         self._next_id: int = 0
 
     def add_particle(self, pos, vel, mass, radius=0.0):
@@ -118,6 +122,8 @@ class ParticleData:
         self.acceleration[idy] = rx * self.acceleration[idx] + ry * self.acceleration[idy]
         self.mass[idy] = self.mass[idx] + self.mass[idy]
         self.radius[idy] = (self.radius[idx]**3 + self.radius[idy]**3)**(1./3.)
+        self.tree_structure[idy] = [self.tree_structure[idy], self.tree_structure[idx]]
+        # print(self.tree_structure[idy])
 
         self.acceleration[idx] = np.zeros(3)
 
@@ -140,6 +146,11 @@ class ParticleData:
         self.ids = np.arange(0, num_active, 1)
         self.active = np.full(num_active, True)
         self.merge_status = np.arange(0, num_active, 1)
+        tree_structures = self.tree_structure
+        self.tree_structure = []
+        for i, tree in enumerate(tree_structures):
+            if active_mask[i]:
+                self.tree_structure.append(tree)
 
         self.n_particles = num_active
         self.capacity = num_active
