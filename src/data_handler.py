@@ -95,3 +95,12 @@ class DynamicLoader:
     def goto(self, step):
         assert 0 <= step < self.max_step
         self.current_step = step
+
+def get_all_speeds(filename):
+    with h5py.File(filename, 'r') as f:
+        num_steps = f["metadata/num_bodies"].shape[0]
+        all_speeds = []
+        for step in range(num_steps):
+            speeds = f[f"timestep_{step}/velocities"][:]
+            all_speeds.append(speeds)
+        return np.concatenate(all_speeds)

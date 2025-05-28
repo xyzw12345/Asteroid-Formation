@@ -91,5 +91,9 @@ if __name__ == "__main__":
         i = int(s[1])
         app = QApplication(sys.argv)
         loader = DynamicLoader(f"./visualization_data/1-{i}-data.dat")
-        visualizer = ThreeDVisualizer(loader)
+        with open('initial_conditions/1.json', 'r') as f:
+            data = json.load(f)
+        params = [json.dumps(entry, indent=4) for entry in data]
+        setting = json.loads(params[i-1])
+        visualizer = ThreeDVisualizer(loader, params=setting, index=i)
         visualizer.run()
