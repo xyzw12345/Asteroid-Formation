@@ -80,6 +80,13 @@ if __name__ == "__main__":
             with ThreadPoolExecutor(max_workers=32) as executor:
                 futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings
                            if i <= int(json_setting['id']) and int(json_setting['id']) <= j]
+    if s[0] == 'profile':
+        i, j = int(s[1]), int(s[2])
+        with open('./initial_conditions/1.json', "r") as file:
+            json_settings = json.load(file)
+        for json_setting in json_settings:
+            if i <= int(json_setting['id']) and int(json_setting['id']) <= j:
+                run('simulation(json_setting, run_index=1, verbose=True)')
     elif s[0] == 'show':
         i = int(s[1])
         app = QApplication(sys.argv)

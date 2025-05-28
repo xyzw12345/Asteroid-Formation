@@ -1,0 +1,552 @@
+{'id': 9, 'num_asteroids': 1000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cpu_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 1000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 1001 particles (1 Sun + 1000 asteroids).
+Starting simulation with N=1001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 2.932e-04, Avg Step Time: 0.0046 s, Number of Remaining Asteroids: 1000
+Step 35/-1, Sim Time: 1.007e-02, Avg Step Time: 0.0022 s, Number of Remaining Asteroids: 1000
+Step 69/-1, Sim Time: 2.030e-02, Avg Step Time: 0.0019 s, Number of Remaining Asteroids: 1000
+Step 102/-1, Sim Time: 3.030e-02, Avg Step Time: 0.0018 s, Number of Remaining Asteroids: 1000
+Step 135/-1, Sim Time: 4.027e-02, Avg Step Time: 0.0017 s, Number of Remaining Asteroids: 1000
+Step 168/-1, Sim Time: 5.007e-02, Avg Step Time: 0.0017 s, Number of Remaining Asteroids: 1000
+Step 203/-1, Sim Time: 6.020e-02, Avg Step Time: 0.0016 s, Number of Remaining Asteroids: 1000
+Step 239/-1, Sim Time: 7.024e-02, Avg Step Time: 0.0016 s, Number of Remaining Asteroids: 1000
+Step 276/-1, Sim Time: 8.002e-02, Avg Step Time: 0.0016 s, Number of Remaining Asteroids: 1000
+Step 317/-1, Sim Time: 9.004e-02, Avg Step Time: 0.0016 s, Number of Remaining Asteroids: 1000
+Step 363/-1, Sim Time: 1.002e-01, Avg Step Time: 0.0016 s, Number of Remaining Asteroids: 1000
+
+Simulation finished.
+Total steps: 362
+Final simulation time: 1.002e-01
+Total execution time: 0.585 s
+Saved plot: ./output/particles_-0001.png
+[1.56610069e-07 1.56612154e-07 1.56657663e-07 1.56672635e-07
+ 1.56729899e-07 1.56762838e-07 1.56798814e-07 1.56808429e-07
+ 1.56835164e-07 1.56850641e-07 1.56919048e-07 1.56933605e-07
+ 1.57061481e-07 1.57069516e-07 1.57069918e-07 1.57094993e-07
+ 1.57152948e-07 1.57163782e-07 1.57177019e-07 1.57189832e-07
+ 1.57220278e-07 1.57244947e-07 1.57289379e-07 1.57290504e-07
+ 1.57290541e-07 1.57341702e-07 1.57361982e-07 1.57384068e-07
+ 1.57490541e-07 1.57576797e-07 1.57624328e-07 1.57656832e-07
+ 1.57698465e-07 1.57730847e-07 1.57779179e-07 1.57828701e-07
+ 1.57831229e-07 1.57855757e-07 1.57881782e-07 1.57894097e-07
+ 1.58010573e-07 1.58016504e-07 1.58083971e-07 1.58141194e-07
+ 1.58149403e-07 1.58150761e-07 1.58154531e-07 1.58202768e-07
+ 1.58238306e-07 1.58254424e-07 1.58290861e-07 1.58291997e-07
+ 1.58333650e-07 1.58338891e-07 1.58462273e-07 1.58472300e-07
+ 1.58473584e-07 1.58543801e-07 1.58553309e-07 1.58592591e-07
+ 1.58629885e-07 1.58660887e-07 1.58846834e-07 1.58865184e-07
+ 1.59008084e-07 1.59103778e-07 1.59189580e-07 1.59200483e-07
+ 1.59257189e-07 1.59265047e-07 1.59307826e-07 1.59546376e-07
+ 1.59656994e-07 1.59821397e-07 1.59846774e-07 1.60010660e-07
+ 1.60016359e-07 1.60021883e-07 1.60028438e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60442409e-07
+ 1.60545090e-07 1.60572684e-07 1.60771188e-07 1.60893552e-07
+ 1.61205405e-07 1.61411706e-07 1.61483380e-07 1.61484331e-07
+ 1.62086054e-07 1.62124887e-07 1.62931049e-07 1.63075478e-07
+ 1.63260698e-07 1.64586544e-07 1.67163317e-07 1.00000000e+00]
+         1188337 function calls (1165178 primitive calls) in 1.640 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      363    0.105    0.000    0.259    0.001 physics.py:16(compute_accelerations)
+      362    0.008    0.000    0.113    0.000 physics.py:61(check_for_overlaps)
+      362    0.004    0.000    0.115    0.000 physics.py:95(get_min_dist)
+        2    0.000    0.000    0.000    0.000 {setAttribute}
+        1    0.000    0.000    0.000    0.000 {setHighDpiScaleFactorRoundingPolicy}
+        1    0.000    0.000    0.000    0.000 {version}
+
+
+{'id': 10, 'num_asteroids': 3000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cpu_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 3000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 3001 particles (1 Sun + 3000 asteroids).
+Starting simulation with N=3001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 1.878e-04, Avg Step Time: 0.0071 s, Number of Remaining Asteroids: 3000
+Step 52/-1, Sim Time: 1.015e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 111/-1, Sim Time: 2.002e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 196/-1, Sim Time: 3.001e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 331/-1, Sim Time: 4.003e-02, Avg Step Time: 0.0105 s, Number of Remaining Asteroids: 3000
+Step 475/-1, Sim Time: 5.000e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 568/-1, Sim Time: 6.003e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 656/-1, Sim Time: 7.007e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 768/-1, Sim Time: 8.002e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 968/-1, Sim Time: 9.000e-02, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+Step 1168/-1, Sim Time: 1.001e-01, Avg Step Time: 0.0104 s, Number of Remaining Asteroids: 3000
+
+Simulation finished.
+Total steps: 1167
+Final simulation time: 1.001e-01
+Total execution time: 12.174 s
+Saved plot: ./output/particles_-0001.png
+[1.59235270e-07 1.59257189e-07 1.59265047e-07 1.59307826e-07
+ 1.59323719e-07 1.59324462e-07 1.59391508e-07 1.59435885e-07
+ 1.59524071e-07 1.59546376e-07 1.59573499e-07 1.59579171e-07
+ 1.59622001e-07 1.59627813e-07 1.59656994e-07 1.59667139e-07
+ 1.59778958e-07 1.59803293e-07 1.59810512e-07 1.59821397e-07
+ 1.59827890e-07 1.59846774e-07 1.59892538e-07 1.59940850e-07
+ 1.60005169e-07 1.60010660e-07 1.60011423e-07 1.60016359e-07
+ 1.60021883e-07 1.60028438e-07 1.60129789e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60290084e-07
+ 1.60317970e-07 1.60408482e-07 1.60442409e-07 1.60471114e-07
+ 1.60534667e-07 1.60545090e-07 1.60572684e-07 1.60646239e-07
+ 1.60713186e-07 1.60748904e-07 1.60771188e-07 1.60774368e-07
+ 1.60802795e-07 1.60803139e-07 1.60860665e-07 1.60868138e-07
+ 1.60885662e-07 1.60893552e-07 1.60895856e-07 1.61000647e-07
+ 1.61024415e-07 1.61072683e-07 1.61103098e-07 1.61134051e-07
+ 1.61205405e-07 1.61289810e-07 1.61320799e-07 1.61380435e-07
+ 1.61411706e-07 1.61436222e-07 1.61483380e-07 1.61484331e-07
+ 1.61768589e-07 1.61893945e-07 1.61948887e-07 1.62086054e-07
+ 1.62124887e-07 1.62127907e-07 1.62186181e-07 1.62250495e-07
+ 1.62260803e-07 1.62312116e-07 1.62467482e-07 1.62805505e-07
+ 1.62816106e-07 1.62885077e-07 1.62931049e-07 1.63064536e-07
+ 1.63075478e-07 1.63227502e-07 1.63240511e-07 1.63260698e-07
+ 1.63365356e-07 1.63565818e-07 1.63659630e-07 1.63681589e-07
+ 1.64217859e-07 1.64586544e-07 1.64745586e-07 1.64955534e-07
+ 1.66139681e-07 1.66588968e-07 1.67163317e-07 1.00000000e+00]
+         1230814 function calls (1208043 primitive calls) in 13.261 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1168    0.942    0.001    5.407    0.005 physics.py:16(compute_accelerations)
+     1167    0.067    0.000    3.088    0.003 physics.py:61(check_for_overlaps)
+     1167    0.031    0.000    2.960    0.003 physics.py:95(get_min_dist)
+
+
+{'id': 11, 'num_asteroids': 10000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cpu_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 10000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 10001 particles (1 Sun + 10000 asteroids).
+Starting simulation with N=10001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 4.174e-05, Avg Step Time: 0.0604 s, Number of Remaining Asteroids: 10000
+Step 461/-1, Sim Time: 1.000e-02, Avg Step Time: 0.0878 s, Number of Remaining Asteroids: 10000
+Step 986/-1, Sim Time: 2.002e-02, Avg Step Time: 0.0898 s, Number of Remaining Asteroids: 9999
+Step 1606/-1, Sim Time: 3.002e-02, Avg Step Time: 0.0913 s, Number of Remaining Asteroids: 9998
+Step 2064/-1, Sim Time: 4.001e-02, Avg Step Time: 0.0922 s, Number of Remaining Asteroids: 9997
+Step 2674/-1, Sim Time: 5.002e-02, Avg Step Time: 0.0925 s, Number of Remaining Asteroids: 9996
+Step 3429/-1, Sim Time: 6.002e-02, Avg Step Time: 0.0927 s, Number of Remaining Asteroids: 9993
+Step 3934/-1, Sim Time: 7.001e-02, Avg Step Time: 0.0927 s, Number of Remaining Asteroids: 9992
+Step 4633/-1, Sim Time: 8.001e-02, Avg Step Time: 0.0927 s, Number of Remaining Asteroids: 9990
+Step 5400/-1, Sim Time: 9.001e-02, Avg Step Time: 0.0925 s, Number of Remaining Asteroids: 9988
+Step 6231/-1, Sim Time: 1.000e-01, Avg Step Time: 0.0924 s, Number of Remaining Asteroids: 9984
+
+Simulation finished.
+Total steps: 6230
+Final simulation time: 1.000e-01
+Total execution time: 575.461 s
+Saved plot: ./output/particles_-0001.png
+[1.62312116e-07 1.62331121e-07 1.62331540e-07 1.62377710e-07
+ 1.62425572e-07 1.62429814e-07 1.62434381e-07 1.62464267e-07
+ 1.62467482e-07 1.62489343e-07 1.62498461e-07 1.62573856e-07
+ 1.62607877e-07 1.62619118e-07 1.62681296e-07 1.62727132e-07
+ 1.62785885e-07 1.62805505e-07 1.62816106e-07 1.62885077e-07
+ 1.62889307e-07 1.62915530e-07 1.62929381e-07 1.62931049e-07
+ 1.62954390e-07 1.63027030e-07 1.63036016e-07 1.63040233e-07
+ 1.63064536e-07 1.63068056e-07 1.63075478e-07 1.63133727e-07
+ 1.63152374e-07 1.63157406e-07 1.63166888e-07 1.63227502e-07
+ 1.63240511e-07 1.63245690e-07 1.63260698e-07 1.63320172e-07
+ 1.63365356e-07 1.63371131e-07 1.63413538e-07 1.63455829e-07
+ 1.63499246e-07 1.63565818e-07 1.63569661e-07 1.63591031e-07
+ 1.63613048e-07 1.63622726e-07 1.63651038e-07 1.63657977e-07
+ 1.63659630e-07 1.63676042e-07 1.63681589e-07 1.63835428e-07
+ 1.63840683e-07 1.63851758e-07 1.63961556e-07 1.64217859e-07
+ 1.64380572e-07 1.64440343e-07 1.64499533e-07 1.64586544e-07
+ 1.64745586e-07 1.64935185e-07 1.64955534e-07 1.65478181e-07
+ 1.65673902e-07 1.65683727e-07 1.65764275e-07 1.66139681e-07
+ 1.66349158e-07 1.66505470e-07 1.66588968e-07 1.66734991e-07
+ 1.66745734e-07 1.67163317e-07 1.67501281e-07 1.67707663e-07
+ 1.68112872e-07 1.68247850e-07 1.68298829e-07 2.87563404e-07
+ 2.88584610e-07 2.88971656e-07 2.89109733e-07 2.93413460e-07
+ 2.95492699e-07 2.95808958e-07 2.99192239e-07 2.99882740e-07
+ 3.00572985e-07 3.01914434e-07 3.04154671e-07 3.04642965e-07
+ 3.04682088e-07 3.05020607e-07 3.10950505e-07 1.00000000e+00]
+         1857876 function calls (1833629 primitive calls) in 576.857 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     6231   19.564    0.003  262.779    0.042 physics.py:16(compute_accelerations)
+     6230    1.303    0.000  155.991    0.025 physics.py:61(check_for_overlaps)
+     6230    0.549    0.000  145.596    0.023 physics.py:95(get_min_dist)
+
+
+{'id': 12, 'num_asteroids': 1000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cpu_barnes_hut'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 1000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 1001 particles (1 Sun + 1000 asteroids).
+Starting simulation with N=1001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 2.932e-04, Avg Step Time: 0.0057 s, Number of Remaining Asteroids: 1000
+Step 35/-1, Sim Time: 1.007e-02, Avg Step Time: 0.0062 s, Number of Remaining Asteroids: 1000
+Step 69/-1, Sim Time: 2.030e-02, Avg Step Time: 0.0063 s, Number of Remaining Asteroids: 1000
+Step 102/-1, Sim Time: 3.030e-02, Avg Step Time: 0.0062 s, Number of Remaining Asteroids: 1000
+Step 135/-1, Sim Time: 4.028e-02, Avg Step Time: 0.0062 s, Number of Remaining Asteroids: 1000
+Step 168/-1, Sim Time: 5.012e-02, Avg Step Time: 0.0062 s, Number of Remaining Asteroids: 1000
+Step 202/-1, Sim Time: 6.003e-02, Avg Step Time: 0.0062 s, Number of Remaining Asteroids: 1000
+Step 238/-1, Sim Time: 7.011e-02, Avg Step Time: 0.0063 s, Number of Remaining Asteroids: 1000
+Step 276/-1, Sim Time: 8.016e-02, Avg Step Time: 0.0063 s, Number of Remaining Asteroids: 1000
+Step 317/-1, Sim Time: 9.017e-02, Avg Step Time: 0.0063 s, Number of Remaining Asteroids: 1000
+Step 362/-1, Sim Time: 1.001e-01, Avg Step Time: 0.0063 s, Number of Remaining Asteroids: 1000
+
+Simulation finished.
+Total steps: 361
+Final simulation time: 1.001e-01
+Total execution time: 2.269 s
+Saved plot: ./output/particles_-0001.png
+[1.56610069e-07 1.56612154e-07 1.56657663e-07 1.56672635e-07
+ 1.56729899e-07 1.56762838e-07 1.56798814e-07 1.56808429e-07
+ 1.56835164e-07 1.56850641e-07 1.56919048e-07 1.56933605e-07
+ 1.57061481e-07 1.57069516e-07 1.57069918e-07 1.57094993e-07
+ 1.57152948e-07 1.57163782e-07 1.57177019e-07 1.57189832e-07
+ 1.57220278e-07 1.57244947e-07 1.57289379e-07 1.57290504e-07
+ 1.57290541e-07 1.57341702e-07 1.57361982e-07 1.57384068e-07
+ 1.57490541e-07 1.57576797e-07 1.57624328e-07 1.57656832e-07
+ 1.57698465e-07 1.57730847e-07 1.57779179e-07 1.57828701e-07
+ 1.57831229e-07 1.57855757e-07 1.57881782e-07 1.57894097e-07
+ 1.58010573e-07 1.58016504e-07 1.58083971e-07 1.58141194e-07
+ 1.58149403e-07 1.58150761e-07 1.58154531e-07 1.58202768e-07
+ 1.58238306e-07 1.58254424e-07 1.58290861e-07 1.58291997e-07
+ 1.58333650e-07 1.58338891e-07 1.58462273e-07 1.58472300e-07
+ 1.58473584e-07 1.58543801e-07 1.58553309e-07 1.58592591e-07
+ 1.58629885e-07 1.58660887e-07 1.58846834e-07 1.58865184e-07
+ 1.59008084e-07 1.59103778e-07 1.59189580e-07 1.59200483e-07
+ 1.59257189e-07 1.59265047e-07 1.59307826e-07 1.59546376e-07
+ 1.59656994e-07 1.59821397e-07 1.59846774e-07 1.60010660e-07
+ 1.60016359e-07 1.60021883e-07 1.60028438e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60442409e-07
+ 1.60545090e-07 1.60572684e-07 1.60771188e-07 1.60893552e-07
+ 1.61205405e-07 1.61411706e-07 1.61483380e-07 1.61484331e-07
+ 1.62086054e-07 1.62124887e-07 1.62931049e-07 1.63075478e-07
+ 1.63260698e-07 1.64586544e-07 1.67163317e-07 1.00000000e+00]
+         1110841 function calls (1088072 primitive calls) in 3.234 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      362    0.083    0.000    1.786    0.005 physics.py:16(compute_accelerations)
+      361    0.006    0.000    0.191    0.001 physics.py:61(check_for_overlaps)
+      361    0.004    0.000    0.195    0.001 physics.py:95(get_min_dist)
+
+
+{'id': 13, 'num_asteroids': 3000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cpu_barnes_hut'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 3000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 3001 particles (1 Sun + 3000 asteroids).
+Starting simulation with N=3001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 1.878e-04, Avg Step Time: 0.0280 s, Number of Remaining Asteroids: 3000
+Step 52/-1, Sim Time: 1.015e-02, Avg Step Time: 0.0284 s, Number of Remaining Asteroids: 3000
+Step 111/-1, Sim Time: 2.002e-02, Avg Step Time: 0.0283 s, Number of Remaining Asteroids: 3000
+Step 196/-1, Sim Time: 3.001e-02, Avg Step Time: 0.0281 s, Number of Remaining Asteroids: 3000
+Step 331/-1, Sim Time: 4.003e-02, Avg Step Time: 0.0279 s, Number of Remaining Asteroids: 3000
+Step 475/-1, Sim Time: 5.000e-02, Avg Step Time: 0.0278 s, Number of Remaining Asteroids: 3000
+Step 568/-1, Sim Time: 6.003e-02, Avg Step Time: 0.0277 s, Number of Remaining Asteroids: 3000
+Step 656/-1, Sim Time: 7.007e-02, Avg Step Time: 0.0277 s, Number of Remaining Asteroids: 3000
+Step 768/-1, Sim Time: 8.002e-02, Avg Step Time: 0.0279 s, Number of Remaining Asteroids: 3000
+Step 968/-1, Sim Time: 9.000e-02, Avg Step Time: 0.0279 s, Number of Remaining Asteroids: 3000
+Step 1168/-1, Sim Time: 1.001e-01, Avg Step Time: 0.0279 s, Number of Remaining Asteroids: 3000
+
+Simulation finished.
+Total steps: 1167
+Final simulation time: 1.001e-01
+Total execution time: 32.530 s
+Saved plot: ./output/particles_-0001.png
+[1.59235270e-07 1.59257189e-07 1.59265047e-07 1.59307826e-07
+ 1.59323719e-07 1.59324462e-07 1.59391508e-07 1.59435885e-07
+ 1.59524071e-07 1.59546376e-07 1.59573499e-07 1.59579171e-07
+ 1.59622001e-07 1.59627813e-07 1.59656994e-07 1.59667139e-07
+ 1.59778958e-07 1.59803293e-07 1.59810512e-07 1.59821397e-07
+ 1.59827890e-07 1.59846774e-07 1.59892538e-07 1.59940850e-07
+ 1.60005169e-07 1.60010660e-07 1.60011423e-07 1.60016359e-07
+ 1.60021883e-07 1.60028438e-07 1.60129789e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60290084e-07
+ 1.60317970e-07 1.60408482e-07 1.60442409e-07 1.60471114e-07
+ 1.60534667e-07 1.60545090e-07 1.60572684e-07 1.60646239e-07
+ 1.60713186e-07 1.60748904e-07 1.60771188e-07 1.60774368e-07
+ 1.60802795e-07 1.60803139e-07 1.60860665e-07 1.60868138e-07
+ 1.60885662e-07 1.60893552e-07 1.60895856e-07 1.61000647e-07
+ 1.61024415e-07 1.61072683e-07 1.61103098e-07 1.61134051e-07
+ 1.61205405e-07 1.61289810e-07 1.61320799e-07 1.61380435e-07
+ 1.61411706e-07 1.61436222e-07 1.61483380e-07 1.61484331e-07
+ 1.61768589e-07 1.61893945e-07 1.61948887e-07 1.62086054e-07
+ 1.62124887e-07 1.62127907e-07 1.62186181e-07 1.62250495e-07
+ 1.62260803e-07 1.62312116e-07 1.62467482e-07 1.62805505e-07
+ 1.62816106e-07 1.62885077e-07 1.62931049e-07 1.63064536e-07
+ 1.63075478e-07 1.63227502e-07 1.63240511e-07 1.63260698e-07
+ 1.63365356e-07 1.63565818e-07 1.63659630e-07 1.63681589e-07
+ 1.64217859e-07 1.64586544e-07 1.64745586e-07 1.64955534e-07
+ 1.66139681e-07 1.66588968e-07 1.67163317e-07 1.00000000e+00]
+         1230814 function calls (1208043 primitive calls) in 33.535 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1168    0.773    0.001   28.983    0.025 physics.py:16(compute_accelerations)
+     1167    0.053    0.000    1.507    0.001 physics.py:61(check_for_overlaps)
+     1167    0.028    0.000    1.497    0.001 physics.py:95(get_min_dist)
+
+
+{'id': 18, 'num_asteroids': 10000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.01, 'with_plot': False, 'plot_interval': 0.001, 'backend': 'cpu_barnes_hut'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 10000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.001
+Generated 10001 particles (1 Sun + 10000 asteroids).
+Starting simulation with N=10001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 4.174e-05, Avg Step Time: 0.1582 s, Number of Remaining Asteroids: 10000
+Step 25/-1, Sim Time: 1.007e-03, Avg Step Time: 0.1637 s, Number of Remaining Asteroids: 10000
+Step 49/-1, Sim Time: 2.010e-03, Avg Step Time: 0.1639 s, Number of Remaining Asteroids: 10000
+Step 74/-1, Sim Time: 3.026e-03, Avg Step Time: 0.1647 s, Number of Remaining Asteroids: 10000
+Step 100/-1, Sim Time: 4.022e-03, Avg Step Time: 0.1669 s, Number of Remaining Asteroids: 10000
+Step 128/-1, Sim Time: 5.000e-03, Avg Step Time: 0.1682 s, Number of Remaining Asteroids: 10000
+Step 161/-1, Sim Time: 6.001e-03, Avg Step Time: 0.1688 s, Number of Remaining Asteroids: 10000
+Step 203/-1, Sim Time: 7.014e-03, Avg Step Time: 0.1693 s, Number of Remaining Asteroids: 10000
+Step 265/-1, Sim Time: 8.007e-03, Avg Step Time: 0.1695 s, Number of Remaining Asteroids: 10000
+Step 380/-1, Sim Time: 9.002e-03, Avg Step Time: 0.1693 s, Number of Remaining Asteroids: 10000
+Step 461/-1, Sim Time: 1.000e-02, Avg Step Time: 0.1696 s, Number of Remaining Asteroids: 10000
+
+Simulation finished.
+Total steps: 460
+Final simulation time: 1.000e-02
+Total execution time: 78.164 s
+Saved plot: ./output/particles_-0001.png
+[1.61970865e-07 1.61972863e-07 1.62001281e-07 1.62086054e-07
+ 1.62090839e-07 1.62104235e-07 1.62124887e-07 1.62127907e-07
+ 1.62129408e-07 1.62129770e-07 1.62186181e-07 1.62195294e-07
+ 1.62235314e-07 1.62250495e-07 1.62260803e-07 1.62297238e-07
+ 1.62312116e-07 1.62331121e-07 1.62331540e-07 1.62377710e-07
+ 1.62425572e-07 1.62429814e-07 1.62434381e-07 1.62464267e-07
+ 1.62467482e-07 1.62489343e-07 1.62498461e-07 1.62573856e-07
+ 1.62607877e-07 1.62619118e-07 1.62681296e-07 1.62727132e-07
+ 1.62785885e-07 1.62805505e-07 1.62816106e-07 1.62885077e-07
+ 1.62889307e-07 1.62915530e-07 1.62929381e-07 1.62931049e-07
+ 1.62954390e-07 1.63027030e-07 1.63036016e-07 1.63040233e-07
+ 1.63064536e-07 1.63068056e-07 1.63075478e-07 1.63133727e-07
+ 1.63152374e-07 1.63157406e-07 1.63166888e-07 1.63227502e-07
+ 1.63240511e-07 1.63245690e-07 1.63260698e-07 1.63320172e-07
+ 1.63365356e-07 1.63371131e-07 1.63413538e-07 1.63455829e-07
+ 1.63499246e-07 1.63565818e-07 1.63569661e-07 1.63591031e-07
+ 1.63613048e-07 1.63622726e-07 1.63651038e-07 1.63657977e-07
+ 1.63659630e-07 1.63676042e-07 1.63681589e-07 1.63835428e-07
+ 1.63840683e-07 1.63851758e-07 1.63961556e-07 1.64217859e-07
+ 1.64380572e-07 1.64440343e-07 1.64499533e-07 1.64586544e-07
+ 1.64745586e-07 1.64935185e-07 1.64955534e-07 1.65478181e-07
+ 1.65673902e-07 1.65683727e-07 1.65764275e-07 1.66139681e-07
+ 1.66349158e-07 1.66505470e-07 1.66588968e-07 1.66734991e-07
+ 1.66745734e-07 1.67163317e-07 1.67501281e-07 1.67707663e-07
+ 1.68112872e-07 1.68247850e-07 1.68298829e-07 1.00000000e+00]
+         1396754 function calls (1373248 primitive calls) in 79.499 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      461    0.996    0.002   72.686    0.158 physics.py:16(compute_accelerations)
+      460    0.063    0.000    2.462    0.005 physics.py:61(check_for_overlaps)
+      460    0.030    0.000    2.445    0.005 physics.py:95(get_min_dist)
+
+
+{'id': 15, 'num_asteroids': 1000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cuda_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 1000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 1001 particles (1 Sun + 1000 asteroids).
+Starting simulation with N=1001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 2.932e-04, Avg Step Time: 0.7533 s, Number of Remaining Asteroids: 1000
+Step 35/-1, Sim Time: 1.007e-02, Avg Step Time: 0.0467 s, Number of Remaining Asteroids: 1000
+Step 69/-1, Sim Time: 2.030e-02, Avg Step Time: 0.0256 s, Number of Remaining Asteroids: 1000
+Step 102/-1, Sim Time: 3.030e-02, Avg Step Time: 0.0186 s, Number of Remaining Asteroids: 1000
+Step 135/-1, Sim Time: 4.027e-02, Avg Step Time: 0.0147 s, Number of Remaining Asteroids: 1000
+Step 168/-1, Sim Time: 5.007e-02, Avg Step Time: 0.0124 s, Number of Remaining Asteroids: 1000
+Step 203/-1, Sim Time: 6.020e-02, Avg Step Time: 0.0108 s, Number of Remaining Asteroids: 1000
+Step 239/-1, Sim Time: 7.024e-02, Avg Step Time: 0.0096 s, Number of Remaining Asteroids: 1000
+Step 276/-1, Sim Time: 8.002e-02, Avg Step Time: 0.0087 s, Number of Remaining Asteroids: 1000
+Step 317/-1, Sim Time: 9.004e-02, Avg Step Time: 0.0080 s, Number of Remaining Asteroids: 1000
+Step 363/-1, Sim Time: 1.002e-01, Avg Step Time: 0.0073 s, Number of Remaining Asteroids: 1000
+
+Simulation finished.
+Total steps: 362
+Final simulation time: 1.002e-01
+Total execution time: 2.662 s
+Saved plot: ./output/particles_-0001.png
+[1.56610069e-07 1.56612154e-07 1.56657663e-07 1.56672635e-07
+ 1.56729899e-07 1.56762838e-07 1.56798814e-07 1.56808429e-07
+ 1.56835164e-07 1.56850641e-07 1.56919048e-07 1.56933605e-07
+ 1.57061481e-07 1.57069516e-07 1.57069918e-07 1.57094993e-07
+ 1.57152948e-07 1.57163782e-07 1.57177019e-07 1.57189832e-07
+ 1.57220278e-07 1.57244947e-07 1.57289379e-07 1.57290504e-07
+ 1.57290541e-07 1.57341702e-07 1.57361982e-07 1.57384068e-07
+ 1.57490541e-07 1.57576797e-07 1.57624328e-07 1.57656832e-07
+ 1.57698465e-07 1.57730847e-07 1.57779179e-07 1.57828701e-07
+ 1.57831229e-07 1.57855757e-07 1.57881782e-07 1.57894097e-07
+ 1.58010573e-07 1.58016504e-07 1.58083971e-07 1.58141194e-07
+ 1.58149403e-07 1.58150761e-07 1.58154531e-07 1.58202768e-07
+ 1.58238306e-07 1.58254424e-07 1.58290861e-07 1.58291997e-07
+ 1.58333650e-07 1.58338891e-07 1.58462273e-07 1.58472300e-07
+ 1.58473584e-07 1.58543801e-07 1.58553309e-07 1.58592591e-07
+ 1.58629885e-07 1.58660887e-07 1.58846834e-07 1.58865184e-07
+ 1.59008084e-07 1.59103778e-07 1.59189580e-07 1.59200483e-07
+ 1.59257189e-07 1.59265047e-07 1.59307826e-07 1.59546376e-07
+ 1.59656994e-07 1.59821397e-07 1.59846774e-07 1.60010660e-07
+ 1.60016359e-07 1.60021883e-07 1.60028438e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60442409e-07
+ 1.60545090e-07 1.60572684e-07 1.60771188e-07 1.60893552e-07
+ 1.61205405e-07 1.61411706e-07 1.61483380e-07 1.61484331e-07
+ 1.62086054e-07 1.62124887e-07 1.62931049e-07 1.63075478e-07
+ 1.63260698e-07 1.64586544e-07 1.67163317e-07 1.00000000e+00]
+         1110918 function calls (1088149 primitive calls) in 3.614 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      363    0.077    0.000    2.188    0.006 physics.py:16(compute_accelerations)
+      362    0.006    0.000    0.214    0.001 physics.py:61(check_for_overlaps)
+      362    0.003    0.000    0.190    0.001 physics.py:95(get_min_dist)
+
+
+{'id': 16, 'num_asteroids': 3000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cuda_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 3000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 3001 particles (1 Sun + 3000 asteroids).
+Starting simulation with N=3001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 1.878e-04, Avg Step Time: 0.0069 s, Number of Remaining Asteroids: 3000
+Step 52/-1, Sim Time: 1.015e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 111/-1, Sim Time: 2.002e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 196/-1, Sim Time: 3.001e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 331/-1, Sim Time: 4.003e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 475/-1, Sim Time: 5.000e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 568/-1, Sim Time: 6.003e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 656/-1, Sim Time: 7.007e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 768/-1, Sim Time: 8.002e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 968/-1, Sim Time: 9.000e-02, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+Step 1168/-1, Sim Time: 1.001e-01, Avg Step Time: 0.0083 s, Number of Remaining Asteroids: 3000
+
+Simulation finished.
+Total steps: 1167
+Final simulation time: 1.001e-01
+Total execution time: 9.704 s
+Saved plot: ./output/particles_-0001.png
+[1.59235270e-07 1.59257189e-07 1.59265047e-07 1.59307826e-07
+ 1.59323719e-07 1.59324462e-07 1.59391508e-07 1.59435885e-07
+ 1.59524071e-07 1.59546376e-07 1.59573499e-07 1.59579171e-07
+ 1.59622001e-07 1.59627813e-07 1.59656994e-07 1.59667139e-07
+ 1.59778958e-07 1.59803293e-07 1.59810512e-07 1.59821397e-07
+ 1.59827890e-07 1.59846774e-07 1.59892538e-07 1.59940850e-07
+ 1.60005169e-07 1.60010660e-07 1.60011423e-07 1.60016359e-07
+ 1.60021883e-07 1.60028438e-07 1.60129789e-07 1.60130539e-07
+ 1.60150512e-07 1.60233543e-07 1.60281778e-07 1.60290084e-07
+ 1.60317970e-07 1.60408482e-07 1.60442409e-07 1.60471114e-07
+ 1.60534667e-07 1.60545090e-07 1.60572684e-07 1.60646239e-07
+ 1.60713186e-07 1.60748904e-07 1.60771188e-07 1.60774368e-07
+ 1.60802795e-07 1.60803139e-07 1.60860665e-07 1.60868138e-07
+ 1.60885662e-07 1.60893552e-07 1.60895856e-07 1.61000647e-07
+ 1.61024415e-07 1.61072683e-07 1.61103098e-07 1.61134051e-07
+ 1.61205405e-07 1.61289810e-07 1.61320799e-07 1.61380435e-07
+ 1.61411706e-07 1.61436222e-07 1.61483380e-07 1.61484331e-07
+ 1.61768589e-07 1.61893945e-07 1.61948887e-07 1.62086054e-07
+ 1.62124887e-07 1.62127907e-07 1.62186181e-07 1.62250495e-07
+ 1.62260803e-07 1.62312116e-07 1.62467482e-07 1.62805505e-07
+ 1.62816106e-07 1.62885077e-07 1.62931049e-07 1.63064536e-07
+ 1.63075478e-07 1.63227502e-07 1.63240511e-07 1.63260698e-07
+ 1.63365356e-07 1.63565818e-07 1.63659630e-07 1.63681589e-07
+ 1.64217859e-07 1.64586544e-07 1.64745586e-07 1.64955534e-07
+ 1.66139681e-07 1.66588968e-07 1.67163317e-07 1.00000000e+00]
+         1230814 function calls (1208043 primitive calls) in 10.782 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     1168    0.743    0.001    5.826    0.005 physics.py:16(compute_accelerations)
+     1167    0.050    0.000    1.870    0.002 physics.py:61(check_for_overlaps)
+     1167    0.032    0.000    1.544    0.001 physics.py:95(get_min_dist)
+
+
+{'id': 17, 'num_asteroids': 10000, 'min_orbit_radius': 0.95, 'max_orbit_radius': 1.05, 'min_mass': 1e-07, 'max_mass': 2e-07, 'density': 9280000.0, 'perturbation_scale': 0.01, 'eta': 0.2, 'default_time_step': 0.001, 'num_steps': -1, 'time_period': 0.1, 'with_plot': False, 'plot_interval': 0.01, 'backend': 'cuda_n2'}
+--- N-Body Simulation Setup ---
+Number of asteroids: 10000
+Time step (dt): 0.001
+Number of steps: -1
+Plot interval: 0.01
+Generated 10001 particles (1 Sun + 10000 asteroids).
+Starting simulation with N=10001 active particles.
+Max dt=0.001, num_steps=-1, G=1, epsilon=1e-08, eta=0.2
+Step 2/-1, Sim Time: 4.174e-05, Avg Step Time: 0.0390 s, Number of Remaining Asteroids: 10000
+Step 461/-1, Sim Time: 1.000e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 10000
+Step 987/-1, Sim Time: 2.003e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9999
+Step 1607/-1, Sim Time: 3.001e-02, Avg Step Time: 0.0470 s, Number of Remaining Asteroids: 9998
+Step 2066/-1, Sim Time: 4.000e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9997
+Step 2677/-1, Sim Time: 5.002e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9996
+Step 3433/-1, Sim Time: 6.001e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9993
+Step 3939/-1, Sim Time: 7.000e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9992
+Step 4640/-1, Sim Time: 8.001e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9990
+Step 5408/-1, Sim Time: 9.001e-02, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9988
+Step 6242/-1, Sim Time: 1.000e-01, Avg Step Time: 0.0469 s, Number of Remaining Asteroids: 9984
+
+Simulation finished.
+Total steps: 6241
+Final simulation time: 1.000e-01
+Total execution time: 292.734 s
+Saved plot: ./output/particles_-0001.png
+[1.62312116e-07 1.62331121e-07 1.62331540e-07 1.62377710e-07
+ 1.62425572e-07 1.62429814e-07 1.62434381e-07 1.62464267e-07
+ 1.62467482e-07 1.62489343e-07 1.62498461e-07 1.62573856e-07
+ 1.62607877e-07 1.62619118e-07 1.62681296e-07 1.62727132e-07
+ 1.62785885e-07 1.62805505e-07 1.62816106e-07 1.62885077e-07
+ 1.62889307e-07 1.62915530e-07 1.62929381e-07 1.62931049e-07
+ 1.62954390e-07 1.63027030e-07 1.63036016e-07 1.63040233e-07
+ 1.63064536e-07 1.63068056e-07 1.63075478e-07 1.63133727e-07
+ 1.63152374e-07 1.63157406e-07 1.63166888e-07 1.63227502e-07
+ 1.63240511e-07 1.63245690e-07 1.63260698e-07 1.63320172e-07
+ 1.63365356e-07 1.63371131e-07 1.63413538e-07 1.63455829e-07
+ 1.63499246e-07 1.63565818e-07 1.63569661e-07 1.63591031e-07
+ 1.63613048e-07 1.63622726e-07 1.63651038e-07 1.63657977e-07
+ 1.63659630e-07 1.63676042e-07 1.63681589e-07 1.63835428e-07
+ 1.63840683e-07 1.63851758e-07 1.63961556e-07 1.64217859e-07
+ 1.64380572e-07 1.64440343e-07 1.64499533e-07 1.64586544e-07
+ 1.64745586e-07 1.64935185e-07 1.64955534e-07 1.65478181e-07
+ 1.65673902e-07 1.65683727e-07 1.65764275e-07 1.66139681e-07
+ 1.66349158e-07 1.66505470e-07 1.66588968e-07 1.66734991e-07
+ 1.66745734e-07 1.67163317e-07 1.67501281e-07 1.67707663e-07
+ 1.68112872e-07 1.68247850e-07 1.68298829e-07 2.87563404e-07
+ 2.88584610e-07 2.88971656e-07 2.89109733e-07 2.93413460e-07
+ 2.95492699e-07 2.95808958e-07 2.99192239e-07 2.99882740e-07
+ 3.00572985e-07 3.01914434e-07 3.04154671e-07 3.04642965e-07
+ 3.04682088e-07 3.05020607e-07 3.10950505e-07 1.00000000e+00]
+         1858723 function calls (1834476 primitive calls) in 294.094 seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     6242   13.195    0.002  191.022    0.031 physics.py:16(compute_accelerations)
+     6241    0.843    0.000   44.639    0.007 physics.py:61(check_for_overlaps)
+     6241    0.452    0.000   50.107    0.008 physics.py:95(get_min_dist)
+
+

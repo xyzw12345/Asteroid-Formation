@@ -1,4 +1,4 @@
-import time
+import time, sys
 import numpy as np
 from .particle_data import ParticleData
 from .physics import compute_accelerations, check_for_overlaps, get_min_dist
@@ -143,6 +143,7 @@ class Simulation:
                     print(f"Step {steps_so_far}/{num_steps}, Sim Time: {self.time:.3e}, "
                         f"Avg Step Time: {avg_time_per_major_step:.4f} s, "
                         f"Number of Remaining Asteroids: {num_active_particles - 1}")
+                    sys.stdout.flush()
                 if num_active_particles < 0.8 * self.particles.n_particles:
                     self.particles.compact()
                 if with_plot:
