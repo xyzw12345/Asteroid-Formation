@@ -1,16 +1,3 @@
-# import matplotlib.pyplot as plt
-# import numpy as np
-
-# def plot_mass_histograms(mass_snapshots, bins=50):
-#     for i, masses in enumerate(mass_snapshots):
-#         plt.figure()
-#         plt.hist(masses[masses<1], bins=bins, log=True)
-#         plt.title(f"Step {i}: Mass Distribution")
-#         plt.xlabel("Mass")
-#         plt.ylabel("Count (log scale)")
-#         plt.savefig(f"frames/mass_hist_{i:04d}.png")
-#         plt.close()
-
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
@@ -55,64 +42,6 @@ def plot_mass_histograms(mass_snapshots_initial, bins=100, interval=1, path="fra
     plt.savefig(path, dpi=300)
     plt.close()
 
-# def plot_mass_histograms(mass_snapshots, bins=100, interval=1, path="frames/mass_hist.png"):
-#     bin_edges = None
-#     hist_matrix = []
-#     for masses in mass_snapshots[::interval]:
-#         masses = masses[masses < 1]  
-#         print(np.min(masses), np.max(masses))
-#         counts, edges = np.histogram(masses, bins=bins)
-#         hist_matrix.append(counts)
-#         if bin_edges is None:
-#             bin_edges = edges
-
-#     hist_matrix = np.array(hist_matrix)  # shape: (time_steps, bins)
-
-#     # 构造网格
-#     T, M = np.meshgrid(
-#         np.arange(hist_matrix.shape[0]),                             
-#         0.5 * (bin_edges[1:] + bin_edges[:-1])  # bin 中心
-#     )
-
-#     # 绘图
-#     fig = plt.figure(figsize=(12, 8))
-#     ax = fig.add_subplot(111, projection='3d')
-#     ax.plot_surface(M, T, hist_matrix.T, cmap='viridis', rstride=1, cstride=1)
-
-#     ax.set_xlabel('Mass')
-#     ax.set_ylabel('Time Step')
-#     ax.set_zlabel('Count')
-#     ax.set_title('Mass Histogram Surface Over Time')
-
-#     plt.tight_layout()
-#     plt.savefig(path, dpi=300)
-#     plt.close()
-
-# def plot_mass_histograms(mass_snapshots, bins=20, interval=1):
-#     from mpl_toolkits.mplot3d import Axes3D
-
-#     bin_edges = None
-#     hist_matrix = []
-#     for masses in mass_snapshots[::interval]:
-#         counts, edges = np.histogram(masses, bins=bins)
-#         hist_matrix.append(counts)
-#         if bin_edges is None:
-#             bin_edges = edges
-
-#     hist_matrix = np.array(hist_matrix)
-#     T, M = np.meshgrid(np.arange(hist_matrix.shape[0]), 0.5 * (bin_edges[1:] + bin_edges[:-1]))
-
-#     fig = plt.figure(figsize=(12, 8))
-#     ax = fig.add_subplot(111, projection='3d')
-#     ax.plot_surface(M, T, hist_matrix.T, cmap='viridis')
-#     ax.set_xlabel('Mass')
-#     ax.set_ylabel('Time Step')
-#     ax.set_zlabel('Count')
-#     ax.set_title('Mass Histogram Surface Over Time')
-#     # 保存图像
-#     plt.tight_layout()
-#     plt.savefig(f"frames/mass_hist.png", dpi=300)
-#     plt.close()
 
 def plot_num(mass_snapshots, interval=1, initial_num = 1000):
     asteroid_num = []
@@ -133,32 +62,35 @@ def plot_num(mass_snapshots, interval=1, initial_num = 1000):
     plt.tight_layout()
     plt.savefig(f"frames/num_plot.png", dpi=300)  # 可选保存
 
+def plot_log_log(mass_snapshots_initial, bins=100, interval=10, path="frames/mass_loglog.png"):
+    # Step 1: 统一归一化
+    all_masses_initial = np.concatenate([m[m < 1] for m in mass_snapshots_initial[::interval]])
+    mass_min_initial = np.min(all_masses_initial)
+    mass_snapshots = [m / mass_min_initial for m in mass_snapshots_initial[::interval]]
 
+    # Step 2: 统一 bin
+    all_masses = np.concatenate(mass_snapshots)
+    mass_min, mass_max = np.min(all_masses), np.max(all_masses)
+    bin_edges = np.logspace(np.log10(mass_min), np.log10(mass_max), bins + 1)  # log scale bin
 
+    # Step 3: 绘制 log-log 图
+    plt.figure(figsize=(10, 6))
+    for i, masses in enumerate(mass_snapshots):
+        counts, edges = np.histogram(masses, bins=bin_edges)
+        centers = 0.5 * (edges[1:] + edges[:-1])
 
-# def plot_mass_histograms(mass_snapshots, bins=50, interval=1):
-#     fig = plt.figure(figsize=(12, 8))
-#     ax = fig.add_subplot(111, projection='3d')
+        # 过滤掉为0的 bin 以避免 log(0)
+        mask = counts > 0
+        plt.plot(centers[mask], counts[mask], label=f"Step {i * interval}", alpha=0.7)
 
-#     bin_edges = None
-#     for t_idx, masses in enumerate(mass_snapshots[::interval]):
-#         counts, edges = np.histogram(masses, bins=bins)
-#         if bin_edges is None:
-#             bin_edges = edges
-#         bin_centers = 0.5 * (bin_edges[1:] + bin_edges[:-1])
-
-#         xs = bin_centers
-#         ys = np.full_like(xs, t_idx)
-#         zs = np.zeros_like(xs)
-#         dx = (bin_edges[1] - bin_edges[0]) * 0.9
-#         dy = 0.9
-#         dz = counts
-
-#         ax.bar3d(xs, ys, zs, dx, dy, dz, shade=True)
-
-#     ax.set_xlabel('Mass')
-#     ax.set_ylabel('Time Step')
-#     ax.set_zlabel('Count')
-#     ax.set_title('3D Mass Distribution Over Time')
-#     plt.tight_layout()
-#     plt.show()
+    # 设置 log-log 轴和图形装饰
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.xlabel('Normalized Mass (log scale)')
+    plt.ylabel('Count (log scale)')
+    plt.title('Mass Distribution Over Time (log-log)')
+    plt.legend(loc='upper right', fontsize='small', ncol=2)
+    plt.grid(True, which="both", ls='--', linewidth=0.5)
+    plt.tight_layout()
+    plt.savefig(path, dpi=300)
+    plt.close()
