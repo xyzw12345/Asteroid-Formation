@@ -74,14 +74,10 @@ if __name__ == "__main__":
         i, j = int(s[1]), int(s[2])
         with open('./initial_conditions/1.json', "r") as file:
             json_settings = json.load(file)
-        if len(s) > 3 and s[3] == 'N':
-            for json_setting in json_settings:
+        for json_setting in json_settings:
                 if i <= int(json_setting['id']) and int(json_setting['id']) <= j:
                     simulation(json_setting, run_index=1, verbose=True)
-        else:
-            with ThreadPoolExecutor(max_workers=32) as executor:
-                futures = [executor.submit(simulation, json_setting, 1, verbose=True) for json_setting in json_settings
-                           if i <= int(json_setting['id']) and int(json_setting['id']) <= j]
+            
     if s[0] == 'profile':
         i, j = int(s[1]), int(s[2])
         with open('./initial_conditions/1.json', "r") as file:
@@ -95,7 +91,7 @@ if __name__ == "__main__":
         loader = DynamicLoader(f"./visualization_data/1-{i}-data.dat")
         with open('initial_conditions/1.json', 'r') as f:
             data = json.load(f)
-        params = [json.dumps(entry, indent=4) for entry in data]
-        setting = json.loads(params[i-1])
-        visualizer = ThreeDVisualizer(filename = f"./visualization_data/1-{i}-data.dat", sim_callback = loader,  params=setting)
+        params = [json.dumps(entry, indent=4) for entry in data if entry['id'] == i]
+        setting = json.loads(params[0])
+        visualizer = ThreeDVisualizer(filename = f"./visualization_data/1-{i}-data.dat", sim_callback = loader, params=setting)
         visualizer.run()
