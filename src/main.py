@@ -15,6 +15,7 @@ from .interactive_visualizer_2 import ThreeDVisualizer as ThreeDVisualizer2
 from .plot_mass_histograms import plot_mass_histograms, plot_num
 from .plot_density import compute_neighbor_density_over_time, plot_density_surface
 from PyQt5.QtWidgets import QApplication
+from analyze_tree import analyze_tree_structure
 import sys
 
 def simulation(setting: json, run_index: int, verbose = False):
@@ -66,6 +67,11 @@ def simulation(setting: json, run_index: int, verbose = False):
 
     density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
     plot_density_surface(density_data, bins=30, filename=f"./visualization_data/{run_index}-{setting_index}-density_surface.png")
+
+    stats = analyze_tree_structure(sim.particles.tree_structure)
+    for (depth, leaves), count in sorted(stats[0].items()):
+        print(f"Depth = {depth}, Leaves = {leaves} → {count} trees")
+    print(sorted(stats[1]))
 
 if __name__ == "__main__":
     s = input().strip().split()
