@@ -30,7 +30,7 @@ class ParticleData:
 
         self.tree_structure = []
         for i in range(capacity):
-            self.tree_structure.append([i])
+            self.tree_structure.append(i)
 
         self._next_id: int = 0
 
