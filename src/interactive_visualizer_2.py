@@ -88,8 +88,8 @@ class ThreeDVisualizer(QMainWindow):
         # 初始化聚类跟踪状态
         self.persistent_clusters = {}
         self.label_counter = 0
-        self.persistence_threshold = 1
-        self.cluster_show = False
+        self.persistence_threshold = 3
+        self.cluster_show = True
 
         self._init_visuals()
 
@@ -242,7 +242,7 @@ class ThreeDVisualizer(QMainWindow):
                     self.persistent_clusters[matched_label]['last_points'] = cluster_points
                 else:
                     inst_label_counter += 1
-                    matched_label = inst_label_counter+1
+                    matched_label = inst_label_counter
                     self.persistent_clusters[matched_label] = {
                         'lifespan': 1,
                         'last_points': cluster_points,
@@ -374,7 +374,7 @@ class ThreeDVisualizer(QMainWindow):
             edge_color=None
         )
         self._update_asteroid_data(new_speed[1:], new_mass[1:], new_pos[1:])
-        self._update_cluster_clouds(new_pos[1:], False, do_visualization=self.cluster_show, do_count=False)
+        self._update_cluster_clouds(new_pos[1:], False, do_visualization=self.cluster_show, do_count=True)
         self.canvas.update()
 
     def run(self):
