@@ -89,7 +89,7 @@ class ThreeDVisualizer(QMainWindow):
         self.persistent_clusters = {}
         self.label_counter = 0
         self.persistence_threshold = 5
-        self.cluster_show = False
+        self.cluster_show = True
 
         self._init_visuals()
 
@@ -339,8 +339,7 @@ class ThreeDVisualizer(QMainWindow):
             self.view.camera.distance = 3  #默认值
         elif event.key == 'C':
             self.cluster_show = not self.cluster_show
-            new_pos, new_speed, new_mass = self.sim_step(self.reverse)
-            new_pos, new_speed, new_mass = self.sim_step(not self.reverse)
+            new_pos, new_speed, new_mass = self.sim_step.get_current_step_data()
             self._update_cluster_clouds(new_pos[1:], True, self.cluster_show)
 
     def on_slider_change(self, value):
@@ -354,8 +353,7 @@ class ThreeDVisualizer(QMainWindow):
             edge_color=None
         )
         self._update_asteroid_data(new_speed[1:], new_mass[1:], new_pos[1:])
-        if self.cluster_show: 
-            self._update_cluster_clouds(new_pos[1:], False)
+        self._update_cluster_clouds(new_pos[1:], False, self.cluster_show)
         self.canvas.update()
 
     def run(self):

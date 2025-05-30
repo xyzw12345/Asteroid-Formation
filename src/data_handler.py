@@ -89,6 +89,15 @@ class DynamicLoader:
             step_group["masses"][:],  # 全部质量
         )
 
+    def get_current_step_data(self):
+        step_group = self.file[f"timestep_{self.current_step}"]
+        return (
+            step_group["positions"][:],
+            step_group["velocities"][:],
+            step_group["masses"][:],
+        )
+
+
     def close(self):
         self.file.close()
 
