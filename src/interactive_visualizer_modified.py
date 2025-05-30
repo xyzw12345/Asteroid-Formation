@@ -81,7 +81,7 @@ class ThreeDVisualizer(QMainWindow):
             anchor_y='top',
             parent=self.canvas.scene
         )
-        self.param_display.pos = (10, 260)
+        self.param_display.pos = (10, 270)
 
         # Index & Speed Data
         self.index = index
@@ -200,6 +200,14 @@ class ThreeDVisualizer(QMainWindow):
             print("R")
         elif event.key == 'D':
             self.view.camera.distance = 3  #默认值
+        elif event.key == 'Right':
+            new_val = min(self.slider.value() + 1, self.slider.maximum())
+            self.slider.setValue(new_val)
+            print("Right")
+        elif event.key == 'Left':
+            new_val = max(self.slider.value() - 1, self.slider.minimum())
+            self.slider.setValue(new_val)
+            print("Left")
 
     def on_slider_change(self, value):
         self.running = False

@@ -80,7 +80,7 @@ class ThreeDVisualizer(QMainWindow):
             anchor_y='top',
             parent=self.canvas.scene
         )
-        self.param_display.pos = (10, 260)
+        self.param_display.pos = (10, 270)
 
         self.initial_num = initial_num
         self.cloud_group = Node(parent=self.view.scene)
@@ -89,7 +89,7 @@ class ThreeDVisualizer(QMainWindow):
         self.persistent_clusters = {}
         self.label_counter = 0
         self.persistence_threshold = 3
-        self.cluster_show = True
+        self.cluster_show = False
 
         self._init_visuals()
 
@@ -362,6 +362,14 @@ class ThreeDVisualizer(QMainWindow):
             else:
                 new_pos, new_speed, new_mass = result
                 self._update_cluster_clouds(new_pos[1:], True, do_visualization=self.cluster_show, do_count=False)
+        elif event.key == 'Right':
+            new_val = min(self.slider.value() + 1, self.slider.maximum())
+            self.slider.setValue(new_val)
+            print("Right")
+        elif event.key == 'Left':
+            new_val = max(self.slider.value() - 1, self.slider.minimum())
+            self.slider.setValue(new_val)
+            print("Left")
 
     def on_slider_change(self, value):
         self.running = False
