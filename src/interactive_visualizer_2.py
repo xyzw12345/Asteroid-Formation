@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 
 vispy.use('PyQt5')
 
+MIN_SPEED, SPEED_RANGE, BASE_RADIUS = None, None, None
 
 class ThreeDVisualizer(QMainWindow):
     def __init__(self, filename, sim_callback: DynamicLoader, params: dict, initial_num=100):
@@ -95,6 +96,10 @@ class ThreeDVisualizer(QMainWindow):
         from vispy import app
         self.timer = app.Timer(interval=self.interval, connect=self.update)
 
+        self.base_radius = None
+        self.min_speed = None
+        self.max_speed = None
+
         self.persistent_clusters = {}
         self.label_counter = 0
         self.persistence_threshold = 5
@@ -115,7 +120,7 @@ class ThreeDVisualizer(QMainWindow):
         self.sun_visual = Markers(
             pos=positions[0:1],
             edge_color=None,
-            face_color=(1, 1, 0, 1),
+            face_color=(1, 0.5, 0, 1),
             symbol='disc',
             size=10,
             parent=self.view.scene
@@ -130,6 +135,7 @@ class ThreeDVisualizer(QMainWindow):
         self.cloud_group = Node(parent=self.view.scene)
 
     def _update_asteroid_data(self, speeds, masses, pos):
+        global BASE_RADIUS, MIN_SPEED, SPEED_RANGE
         if len(speeds) == 0:
             return
         all_speeds = get_all_speeds(self.filename)
@@ -140,14 +146,18 @@ class ThreeDVisualizer(QMainWindow):
         if not self.colorbar_initialized:
             self.colorbar.clim = (speed_min, speed_max)
             self.colorbar_initialized = True
-        speeds[speeds > speed_max] = 5
-        speed_range = speed_max - speed_min + 1e-8
-        speed_colors = color.get_colormap('viridis').map((speeds - speed_min)/speed_range)
-        # speed_colors = color.get_colormap('inferno').map(np.power((np.log(speeds) - np.log(speed_min))/(np.log(speed_max) - np.log(speed_min)), 3))
+        # speeds[speeds > speed_max] = 5
+        # speed_range = speed_max - speed_min + 1e-8
+        # speed_colors = color.get_colormap('viridis').map((speeds - speed_min)/speed_range)
+        if MIN_SPEED is None:
+            MIN_SPEED, SPEED_RANGE = speeds.min() * 0.5, speeds.max() * 2.0 - speeds.min() * 0.5 + 1e-8
+        if BASE_RADIUS is None:
+            BASE_RADIUS = np.cbrt(np.min(masses))
+        speed_colors = color.get_colormap('viridis').map(np.clip((speeds - MIN_SPEED)/ SPEED_RANGE, 0, 1))
         self.asteroid_visual.set_data(
             pos=pos,
             face_color=speed_colors,
-            size=100 * masses ** 0.3333,
+            size=5 * np.cbrt(masses) / BASE_RADIUS,
             edge_color=None
         )
 
@@ -296,7 +306,7 @@ class ThreeDVisualizer(QMainWindow):
 
             self.sun_visual.set_data(
                 pos=new_pos[0:1],
-                face_color=(1, 1, 0, 1),
+                face_color=(1, 0.5, 0, 1),
                 size=30,
                 edge_color=None
             )
@@ -339,7 +349,7 @@ class ThreeDVisualizer(QMainWindow):
         new_pos, new_speed, new_mass = self.sim_step()
         self.sun_visual.set_data(
             pos=new_pos[0:1],
-            face_color=(1, 1, 0, 1),
+            face_color=(1, 0.5, 0, 1),
             size=30,
             edge_color=None
         )

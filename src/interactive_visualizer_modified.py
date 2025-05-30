@@ -122,7 +122,7 @@ class ThreeDVisualizer(QMainWindow):
         self.sun_visual = Markers(
             pos=positions[0:1],
             edge_color=None,
-            face_color=(1, 1, 0, 1),
+            face_color=(1, 0.5, 0, 1),
             symbol='disc',
             size=10,
             parent=self.view.scene
@@ -169,7 +169,7 @@ class ThreeDVisualizer(QMainWindow):
 
             self.sun_visual.set_data(
                 pos=new_pos[0:1],
-                face_color=(1, 1, 0, 1),
+                face_color=(1, 0.5, 0, 1),
                 size=30,
                 edge_color=None
             )
@@ -207,7 +207,7 @@ class ThreeDVisualizer(QMainWindow):
         new_pos, new_speed, new_mass = self.sim_step()
         self.sun_visual.set_data(
             pos=new_pos[0:1],
-            face_color=(1, 1, 0, 1),
+            face_color=(1, 0.5, 0, 1),
             size=30,
             edge_color=None
         )
