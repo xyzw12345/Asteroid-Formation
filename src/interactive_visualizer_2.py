@@ -88,8 +88,8 @@ class ThreeDVisualizer(QMainWindow):
         # 初始化聚类跟踪状态
         self.persistent_clusters = {}
         self.label_counter = 0
-        self.persistence_threshold = 5
-        self.cluster_show = True
+        self.persistence_threshold = 1
+        self.cluster_show = False
 
         self._init_visuals()
 
@@ -99,10 +99,6 @@ class ThreeDVisualizer(QMainWindow):
         self.base_radius = None
         self.min_speed = None
         self.max_speed = None
-
-        self.persistent_clusters = {}
-        self.label_counter = 0
-        self.persistence_threshold = 5
 
     def _on_resize(self, event): 
         canvas_width = self.canvas.size[0]
@@ -131,7 +127,7 @@ class ThreeDVisualizer(QMainWindow):
             parent=self.view.scene
         )
         self._update_asteroid_data(speeds[1:], masses[1:], positions[1:])
-        self._update_cluster_clouds(positions[1:], False)
+        self._update_cluster_clouds(positions[1:], False, self.cluster_show, do_count=True)
         self.cloud_group = Node(parent=self.view.scene)
 
     def _update_asteroid_data(self, speeds, masses, pos):
@@ -161,7 +157,7 @@ class ThreeDVisualizer(QMainWindow):
             edge_color=None
         )
 
-    def _update_cluster_clouds(self, pos, if_print=False, do_visualization = True):
+    def _update_cluster_clouds(self, pos, if_print=False, do_visualization = True, do_count=False):
         for child in list(self.cloud_group.children):
             child.parent = None
 
@@ -175,6 +171,8 @@ class ThreeDVisualizer(QMainWindow):
             print(f"DBSCAN found {len(unique_labels)} asteroid cluster(s)")
 
         current_step_clusters = {}
+
+        inst_label_counter = self.label_counter
 
         for label in unique_labels:
             if label == -1:
@@ -224,19 +222,34 @@ class ThreeDVisualizer(QMainWindow):
                     best_match_label = prev_label
 
             similarity_threshold = 0.5
-            if best_score > similarity_threshold:
-                matched_label = best_match_label
-                self.persistent_clusters[matched_label]['lifespan'] += 1
-                self.persistent_clusters[matched_label]['last_points'] = cluster_points
+            if do_count:
+                if best_score > similarity_threshold:
+                    matched_label = best_match_label
+                    self.persistent_clusters[matched_label]['lifespan'] += 1
+                    self.persistent_clusters[matched_label]['last_points'] = cluster_points
+                else:
+                    self.label_counter += 1
+                    matched_label = self.label_counter
+                    self.persistent_clusters[matched_label] = {
+                        'lifespan': 1,
+                        'last_points': cluster_points,
+                        'first_points': cluster_points.copy(),
+                        'ready_to_show': False
+                    }
             else:
-                self.label_counter += 1
-                matched_label = self.label_counter
-                self.persistent_clusters[matched_label] = {
-                    'lifespan': 1,
-                    'last_points': cluster_points,
-                    'first_points': cluster_points.copy(),
-                    'ready_to_show': False
-                }
+                if best_score > similarity_threshold:
+                    matched_label = best_match_label
+                    self.persistent_clusters[matched_label]['last_points'] = cluster_points
+                else:
+                    inst_label_counter += 1
+                    matched_label = inst_label_counter+1
+                    self.persistent_clusters[matched_label] = {
+                        'lifespan': 1,
+                        'last_points': cluster_points,
+                        'first_points': cluster_points.copy(),
+                        'ready_to_show': False
+                    }
+
 
             current_step_clusters[matched_label] = cluster_points
 
@@ -271,6 +284,9 @@ class ThreeDVisualizer(QMainWindow):
         centroid_b = np.mean(cluster_b, axis=0)
         a_centered = cluster_a - centroid_a
         b_centered = cluster_b - centroid_b
+
+        if a_centered.shape[0] < 3 or b_centered.shape[0] < 3:
+            return 0
 
         pca_a = PCA(n_components=3).fit(a_centered)
         pca_b = PCA(n_components=3).fit(b_centered)
@@ -311,7 +327,8 @@ class ThreeDVisualizer(QMainWindow):
                 edge_color=None
             )
             self._update_asteroid_data(new_speed[1:], new_mass[1:], new_pos[1:])
-            self._update_cluster_clouds(new_pos[1:], True, self.cluster_show)
+            if self.cluster_show:
+                self._update_cluster_clouds(new_pos[1:], True, do_visualization=self.cluster_show, do_count=True)
             self.canvas.update()
 
     def on_key_press(self, event):
@@ -339,8 +356,12 @@ class ThreeDVisualizer(QMainWindow):
             self.view.camera.distance = 3  #默认值
         elif event.key == 'C':
             self.cluster_show = not self.cluster_show
-            new_pos, new_speed, new_mass = self.sim_step.get_current_step_data()
-            self._update_cluster_clouds(new_pos[1:], True, self.cluster_show)
+            result = self.sim_step.get_current_step_data()
+            if result is None:
+                print("Skipped frame due to invalid step.")
+            else:
+                new_pos, new_speed, new_mass = result
+                self._update_cluster_clouds(new_pos[1:], True, do_visualization=self.cluster_show, do_count=False)
 
     def on_slider_change(self, value):
         self.running = False
@@ -353,7 +374,7 @@ class ThreeDVisualizer(QMainWindow):
             edge_color=None
         )
         self._update_asteroid_data(new_speed[1:], new_mass[1:], new_pos[1:])
-        self._update_cluster_clouds(new_pos[1:], False, self.cluster_show)
+        self._update_cluster_clouds(new_pos[1:], False, do_visualization=self.cluster_show, do_count=False)
         self.canvas.update()
 
     def run(self):

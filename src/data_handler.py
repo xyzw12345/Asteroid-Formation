@@ -88,14 +88,20 @@ class DynamicLoader:
             step_group["velocities"][:],  # 全部速度
             step_group["masses"][:],  # 全部质量
         )
-
+    
     def get_current_step_data(self):
-        step_group = self.file[f"timestep_{self.current_step}"]
-        return (
-            step_group["positions"][:],
-            step_group["velocities"][:],
-            step_group["masses"][:],
-        )
+        self.current_step -= 1
+        if 0 <= self.current_step < self.max_step:
+            step_group = self.file[f"timestep_{self.current_step}"]
+            self.current_step += 1
+            return (
+                step_group["positions"][:],
+                step_group["velocities"][:],
+                step_group["masses"][:],
+            )
+        else: 
+            self.current_step += 1
+            return None
 
 
     def close(self):
@@ -113,3 +119,5 @@ def get_all_speeds(filename):
             speeds = f[f"timestep_{step}/velocities"][:]
             all_speeds.append(speeds)
         return np.concatenate(all_speeds)
+
+
