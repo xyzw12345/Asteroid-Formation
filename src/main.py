@@ -11,6 +11,7 @@ from cProfile import run
 from .data_handler import DynamicWriter, DynamicLoader
 # from .interactive_visualizaer import ThreeDVisualizer
 from .interactive_visualizer_modified import ThreeDVisualizer
+from .interactive_visualizer_2 import ThreeDVisualizer as ThreeDVisualizer2
 from .plot_mass_histograms import plot_mass_histograms, plot_num
 from .plot_density import compute_neighbor_density_over_time, plot_density_surface
 from PyQt5.QtWidgets import QApplication
@@ -96,4 +97,15 @@ if __name__ == "__main__":
         params = [json.dumps(entry, indent=4) for entry in data]
         setting = json.loads(params[i-1])
         visualizer = ThreeDVisualizer(loader, params=setting, index=i)
+        visualizer.run()
+
+    elif s[0] == 'cshow':
+        i = int(s[1])
+        app = QApplication(sys.argv)
+        loader = DynamicLoader(f"./visualization_data/1-{i}-data.dat")
+        with open('initial_conditions/1.json', 'r') as f:
+            data = json.load(f)
+        params = [json.dumps(entry, indent=4) for entry in data]
+        setting = json.loads(params[i-1])
+        visualizer = ThreeDVisualizer2(filename = f"./visualization_data/1-{i}-data.dat", sim_callback = loader,  params=setting)
         visualizer.run()
