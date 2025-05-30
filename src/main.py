@@ -12,7 +12,7 @@ from .data_handler import DynamicWriter, DynamicLoader
 # from .interactive_visualizaer import ThreeDVisualizer
 from .interactive_visualizer_modified import ThreeDVisualizer
 from .interactive_visualizer_2 import ThreeDVisualizer as ThreeDVisualizer2
-from .plot_mass_histograms import plot_mass_histograms, plot_num
+from .plot_mass_histograms import plot_mass_histograms, plot_num, plot_log_log
 from .plot_density import compute_neighbor_density_over_time, plot_density_surface
 from PyQt5.QtWidgets import QApplication
 from analyze_tree import analyze_tree_structure
@@ -64,6 +64,7 @@ def simulation(setting: json, run_index: int, verbose = False):
     
     print(np.sort(particles.mass[particles.active_indices])[-100:])
     plot_mass_histograms(sim.mass_snapshots, path=f"./visualization_data/{run_index}-{setting_index}-mass_histogram.png")
+    plot_log_log(sim.mass_snapshots, path=f"./visualization_data/{run_index}-{setting_index}-log_log.png")
 
     density_data = compute_neighbor_density_over_time(sim.position_snapshots, radius=0.05)
     plot_density_surface(density_data, bins=30, filename=f"./visualization_data/{run_index}-{setting_index}-density_surface.png")
